@@ -1,0 +1,119 @@
+user valid arguments from user :=>
+
+starting 
+Features/Possibilites for Tail 
+
+=> node tail.js "fileName"
+=> node tail.js -n -3 "fileName"
+=> node tail.js -3 "fileName"
+=> tail
+=> cat fileName | node tail.js
+=> cat fileName | node tail.js
+=> node tail.js "fileName1"  "fileName2"
+=> node tail.js -n -3 "fileName1" "fileName2"
+=> node tail.js -3 "fileName1" "fileName2"
+
+// single file as input
++=> node tail.js "fileName"
++=> node tail.js -n -3 "fileName"
++=> node tail.js -3 "fileName"
+
+// multiple file as input
++=> node tail.js "fileName1"  "fileName2"
++=> node tail.js -n -3 "fileName1" "fileName2"
++=> node tail.js -3 "fileName1" "fileName2"
+
+// standard input output
++=> tail
++=> cat fileName | node tail.js
+=> cat fileName1 fileName2 | node tail.js // last 10 lines from the standard input/output
+=> cat fileName1 fileName2 | node tail.js fileName // takes only from the fileName , doesnot consider the standard input and output
+
+//------------------------starting of planning---------------------
+
+A : => for single file as input with default num of line to pass
+
+// modify case 1 according to the growing demands form command line
+
+=> case 1 : when file is of more than 10 line
+
+file = "line1
+  line2
+  line3
+  line4
+  .....
+  line(lastLine)"
+
+command line arguments = node tail.js  file
+
+output = "line(lastLine - 9)
+    line(lastLine - 8)
+    ....
+    line(lastLine - 1)
+    linel(lastLine) "
+
+# 1 => the last step
+  output = string = displayMessage
+  input = fileContentsObject, fileList , errorsObject
+  name == formatOutput
+
+# 2 => : the previous step // fileContentsObject sorted list 
+      
+output = arrayOfString => 
+          {
+          fileName1  : [line(lastLine - 9),...,line(lastLine - 1),linel(lastLine) ], 
+          fileName2  : [line(lastLine - 9),...,line(lastLine - 1),linel(lastLine) ] 
+          }
+      
+input = FileContents => 
+    {fileName1  : FileContent1, fileName2  : FileContent2 } , numOfLines
+      
+name => sortFileContent 
+
+3 => name == readContent
+    3.1 : the previous step
+      output = FileContent
+      input = filePath
+
+  3.2 : the previous step // for error due to non existing directory 
+      output = stderr = array = [`tail: ${file}: No such file or directory`]
+      input = filePath
+
+# 4 =>  name : collectContent
+    output = { fileName1  : FileContent1, fileName2  : FileContent2 } 
+    input = string = filePaths
+    name : collectContent
+
+# 5 => errorCollector 
+    output = { fileName : error , typeOfError: "" } 
+    input = fileName , error
+    name : errorCollector
+
+# 6.1 => the previous step 
+  output = object => {filePaths : [path1, path2,...],numofLine : num }
+  input = userArgs
+  name == parseUserArgs
+
+# 6.2 => the previous step //from standard input
+ output = { fileName : "standard input" } }
+    input = string = standard input 
+
+[ note : while parching the user the num of line are set to default 10 but if specified then it will take from the outside ]
+[ note : it will take the asked line or ( 10 line or file line( if less than 10 ) ) if not specified ]
+
+//--------------------------------------------------------------------------------
+flow ==> 
+
+
+userArgs => parseUserArgs 
+=========================|| =>  collectContent(stdin) =====================||
+||                          => collectReadContent(fileRead) [ readContent]=||
+||                                                                         ||
+|| (num of lines )                                                         ||
+||                                                                         ||
+-----{ output, error, fileList }<============================================
+||
+||
+||
+||
+( sortFileContent ) =========> formatOutput ====> displayMessage
