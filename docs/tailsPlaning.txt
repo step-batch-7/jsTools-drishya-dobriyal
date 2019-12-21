@@ -1,7 +1,6 @@
 user valid arguments from user :=>
 
-starting 
-Features/Possibilites for Tail 
+starting  ( Features/Possibilites for Tail )
 
 => node tail.js "fileName"
 => node tail.js -n -3 "fileName"
@@ -13,6 +12,8 @@ Features/Possibilites for Tail
 => node tail.js -n -3 "fileName1" "fileName2"
 => node tail.js -3 "fileName1" "fileName2"
 
+//-------------------------------------------------------
+Features/Possibilites for Tail 
 // single file as input
 +=> node tail.js "fileName"
 +=> node tail.js -n -3 "fileName"
@@ -89,14 +90,16 @@ name => sortFileContent
     input = fileName , error
     name : errorCollector
 
-# 6.1 => the previous step 
+# 6 
+ 6.1 => the previous step 
   output = object => {filePaths : [path1, path2,...],numofLine : num }
   input = userArgs
   name == parseUserArgs
 
-# 6.2 => the previous step //from standard input
- output = { fileName : "standard input" } }
+ 6.2 => the previous step //from standard input
+    output = { fileName : "standard input" } }
     input = string = standard input 
+
 
 [ note : while parching the user the num of line are set to default 10 but if specified then it will take from the outside ]
 [ note : it will take the asked line or ( 10 line or file line( if less than 10 ) ) if not specified ]
