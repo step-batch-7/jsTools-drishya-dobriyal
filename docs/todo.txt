@@ -16,11 +16,11 @@ steps :
           chai
   
   tasks : 
-    parseUserArguments
-    readContentOfFile
+    done = parseUserArguments
+    done = readContentOfFile
     select 10 lines from file
     display the content 
-    
+
   check the Links connection 
      commandLineArguments => parseUserArguments => readContentOfFile => select 10 lines from file => display the content 
   

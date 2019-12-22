@@ -3,7 +3,8 @@ const parseUserArgs = function(userArgs) {
   return { filePath };
 };
 
-const readContent = function(reader, filePath) {
+const readContent = function(reader, filePresent, filePath) {
+  if (!filePresent) return `tail: ${filePath}: No such file or directory`;
   return reader(filePath);
 };
 
