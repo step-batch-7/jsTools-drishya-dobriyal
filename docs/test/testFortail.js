@@ -1,5 +1,5 @@
 const assert = require("chai").assert;
-const { parseUserArgs, readContent } = require("../src/tail.js");
+const { parseUserArgs, readContent, sortContent } = require("../src/tail.js");
 
 describe("tail", function() {
   describe("parseUserArgs", function() {
@@ -42,6 +42,21 @@ describe("tail", function() {
       assert.deepStrictEqual(actualValue, {
         error: `tail: filePath: No such file or directory`
       });
+    });
+  });
+
+  describe("sortContent", function() {
+    it("should give last 10 line of file of more than 10 lines", function() {
+      const content =
+        "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n";
+      assert.strictEqual(
+        sortContent(content),
+        "11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n"
+      );
+    });
+    it("should give the total line of file if the content of file is less than 10 ", function() {
+      const content = "1\n2\n3\n4\n5\n6\n";
+      assert.strictEqual(sortContent(content), "1\n2\n3\n4\n5\n6\n");
     });
   });
 });

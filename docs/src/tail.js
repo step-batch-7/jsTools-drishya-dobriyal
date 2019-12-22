@@ -1,10 +1,3 @@
-const fsUtility = function() {
-  const fs = require("fs");
-  const reader = fs.readFileSync;
-  const isFilePresent = fs.existsSync;
-  return { reader, isFilePresent };
-};
-
 const parseUserArgs = function(userArgs) {
   const filePath = userArgs[1];
   return { filePath };
@@ -17,9 +10,16 @@ const readContent = function(reader, isFilePresent, filePath) {
   return { content: reader(filePath) };
 };
 
+const sortContent = function(content) {
+  return content
+    .split("\n")
+    .slice(-11)
+    .join("\n");
+};
+
 const tail = function(userArgs) {
   const parsedArgs = parseUserArgs(userArgs);
   const content = readContent(reader, IsFilePresent, filePath);
 };
 
-module.exports = { parseUserArgs, readContent };
+module.exports = { parseUserArgs, readContent, sortContent };
