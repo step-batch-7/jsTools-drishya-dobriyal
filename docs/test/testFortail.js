@@ -12,10 +12,11 @@ describe("tail", function() {
   });
 
   describe("readContent", function() {
-    it("should give the content of the file ", function() {
+    it("should give the content of the file if file exist ", function() {
       const reader = function(filePath) {
         assert.strictEqual(filePath, "filePath");
-        return "file content's in string ";
+        const content = "file content's in string ";
+        return content;
       };
       const filePresent = function(filePath) {
         assert.strictEqual(filePath, "filePath");
@@ -23,22 +24,24 @@ describe("tail", function() {
       };
       const filePath = "filePath";
       const actualValue = readContent(reader, filePresent, filePath);
-      const expectedValue = "file content's in string ";
-      assert.strictEqual(actualValue, expectedValue);
+      assert.deepStrictEqual(actualValue, {
+        content: "file content's in string "
+      });
     });
+
     it("should give the error for the file that doesn't exist ", function() {
-      const reader = function(filePath) {
-        assert.strictEqual(filePath, "filePath");
-        return `tail: filePath: No such file or directory`;
-      };
+      const filePath = "filePath";
       const filePresent = function(filePath) {
         assert.strictEqual(filePath, "filePath");
         return false;
       };
-      const filePath = "filePath";
+      const reader = function() {
+        return;
+      };
       const actualValue = readContent(reader, filePresent, filePath);
-      const expectedValue = `tail: filePath: No such file or directory`;
-      assert.strictEqual(actualValue, expectedValue);
+      assert.deepStrictEqual(actualValue, {
+        error: `tail: filePath: No such file or directory`
+      });
     });
   });
 });
