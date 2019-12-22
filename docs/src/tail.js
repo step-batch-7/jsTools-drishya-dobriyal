@@ -3,8 +3,12 @@ const parseUserArgs = function(userArgs) {
   return { filePath };
 };
 
+const readContent = function(reader, filePath) {
+  return reader(filePath);
+};
+
 const tail = function(userArgs) {
   const parsedArgs = parseUserArgs(userArgs);
 };
 
-exports.parseUserArgs = parseUserArgs;
+module.exports = { parseUserArgs, readContent };
