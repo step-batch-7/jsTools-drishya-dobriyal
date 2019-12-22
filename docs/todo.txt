@@ -6,20 +6,21 @@ node tail.js "fileName" // display the last 10 lines of the file specified
 
 steps :
   
-  init npm
+  done = init npm
   
-  make file : tail.js
-  make directory : src and test
+  done = make file : tail.js
+  done = make directory : src and test
   
-  dev dependencies 
-      mocha 
-      chai
-  
-  check the Links connection 
-     commandLineArguments => parseUserArguments => readContentOfFile => select 10 lines from file => display the content 
+  done = dev dependencies 
+          mocha 
+          chai
   
   tasks : 
     parseUserArguments
     readContentOfFile
     select 10 lines from file
     display the content 
+    
+  check the Links connection 
+     commandLineArguments => parseUserArguments => readContentOfFile => select 10 lines from file => display the content 
+  
