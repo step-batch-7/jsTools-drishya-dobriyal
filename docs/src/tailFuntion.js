@@ -22,7 +22,8 @@ const tail = function(userArgs, fs) {
   const filePath = parsedArgs.filePath;
   const content = readContent(fs().reader, fs().isFilePresent, filePath);
   const sortedContent = sortContent(content.fileContent);
-  return sortedContent;
+  const errorOccured = content.error;
+  return { sortedContent, errorOccured };
 };
 
 module.exports = { parseUserArgs, readContent, sortContent, tail };

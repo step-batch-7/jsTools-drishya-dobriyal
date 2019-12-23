@@ -19,10 +19,10 @@ steps :
     done = parseUserArguments
     done = readContentOfFile
     done = select 10 lines from file
-    display the content 
+    done = display the content 
      
-     create an app test
+    done =  create an app test
   
-  check the Links connection 
+  done = check the Links connection 
      commandLineArguments => parseUserArguments => readContentOfFile => select 10 lines from file => display the content 
   
