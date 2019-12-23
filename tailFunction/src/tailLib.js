@@ -3,10 +3,7 @@ const parseUserArgs = function(userArgs) {
   return { filePath };
 };
 
-const readContent = function(reader, isFilePresent, filePath) {
-  if (!isFilePresent(filePath)) {
-    throw new Error(`tail: ${filePath}: No such file or directory`);
-  }
+const readContent = function(reader, filePath) {
   return { fileContent: reader(filePath, "utf8") };
 };
 
@@ -17,17 +14,19 @@ const sortContent = function(content) {
     .join("\n");
 };
 
-const tailFunction = function(userArgs, fs) {
+const tailFunction = function(userArgs, fileOperation) {
   const parsedArgs = parseUserArgs(userArgs);
   const filePath = parsedArgs.filePath;
-  const content = readContent(fs().reader, fs().isFilePresent, filePath);
-  const sortedContent = sortContent(content.fileContent);
-  return sortedContent;
+  if (!fileOperation.isFilePresent(filePath)) {
+    return { errorOccured: `tail: ${filePath}: No such file or directory` };
+  }
+  const content = readContent(fileOperation.reader, filePath);
+  return { sortedContent: sortContent(content.fileContent) };
 };
 
 module.exports = {
   parseUserArgs,
   readContent,
   sortContent,
-  tail: tailFunction
+  tailFunction
 };

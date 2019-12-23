@@ -4,8 +4,8 @@ const {
   parseUserArgs,
   readContent,
   sortContent,
-  tail
-} = require("../src/tailFuntion.js");
+  tailFunction
+} = require("../src/tailLib.js");
 
 describe("tail", function() {
   describe("parseUserArgs", function() {
@@ -24,39 +24,16 @@ describe("tail", function() {
         const fileContent = "file content's in string ";
         return fileContent;
       };
-      const isFilePresent = function(filePath) {
-        assert.strictEqual(filePath, "filePath");
-        return true;
-      };
       const filePath = "filePath";
-      const actualValue = readContent(reader, isFilePresent, filePath);
+      const actualValue = readContent(reader, filePath);
       assert.deepStrictEqual(actualValue, {
         fileContent: "file content's in string "
       });
     });
-
-    it("should give the error for the file that doesn't exist ", function() {
-      const filePath = "filePath";
-      const filePresent = function(filePath) {
-        assert.strictEqual(filePath, "filePath");
-        return false;
-      };
-      const errorExpected = new Error(
-        `tail: ${filePath}: No such file or directory`
-      );
-      const reader = function() {
-        return;
-      };
-      try {
-        readContent(reader, filePresent, filePath);
-      } catch (err) {
-        expect(err.message).to.be.equal(errorExpected.message);
-      }
-    });
   });
 
   describe("sortContent", function() {
-    it("should give last 10 line of file of more than 10 lines", function() {
+    it("should give last 10 line of file of more than 10 lines when lines are not specified", function() {
       const content =
         "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20";
       assert.strictEqual(
@@ -64,7 +41,7 @@ describe("tail", function() {
         "11\n12\n13\n14\n15\n16\n17\n18\n19\n20"
       );
     });
-    it("should give the total line of file if the content of file is less than 10 ", function() {
+    it("should give the total line of file if the content of file is less than 10  when lines are not specified", function() {
       const content = "1\n2\n3\n4\n5\n6";
       assert.strictEqual(sortContent(content), "1\n2\n3\n4\n5\n6");
     });
@@ -72,7 +49,7 @@ describe("tail", function() {
 
   describe("tail", function() {
     it("should give last 10 lines of a file that exist ", function() {
-      fs = function() {
+      const fileOperation = function() {
         const reader = function(filePath) {
           assert.strictEqual(filePath, "filePath");
           return "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20";
@@ -84,14 +61,13 @@ describe("tail", function() {
         return { reader, isFilePresent };
       };
       const userArguments = ["tail.js", "filePath"];
-      const actualValue = tail(userArguments, fs);
-      assert.deepStrictEqual(
-        actualValue,
-        "11\n12\n13\n14\n15\n16\n17\n18\n19\n20"
-      );
+      const actualValue = tailFunction(userArguments, fileOperation());
+      assert.deepStrictEqual(actualValue, {
+        sortedContent: "11\n12\n13\n14\n15\n16\n17\n18\n19\n20"
+      });
     });
     it("should give error for file that does not exist", function() {
-      fs = function() {
+      const fileOperation = function() {
         const reader = () => {};
         const isFilePresent = function(filePath) {
           assert.strictEqual(filePath, "filePath");
@@ -104,7 +80,7 @@ describe("tail", function() {
         `tail: filePath: No such file or directory`
       );
       try {
-        tail(userArguments, fs);
+        tailFunction(userArguments, fileOperation());
       } catch (err) {
         expect(err.message).to.be.equal(errorExpected.message);
       }

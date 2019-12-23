@@ -1,6 +1,6 @@
-const { tail } = require("./src/tailFuntion.js");
+const { tailFunction } = require("./src/tailLib.js");
 
-const fs = function() {
+const fileOperation = function() {
   const fs = require("fs");
   const reader = fs.readFileSync;
   const isFilePresent = fs.existsSync;
@@ -9,11 +9,15 @@ const fs = function() {
 
 const main = function() {
   const userArguments = process.argv.splice(1);
-  try {
-    console.log(tail(userArguments, fs));
-  } catch (err) {
-    console.error(err.message);
-  }
+  const displayMessage = tailFunction(userArguments, fileOperation());
+  if (displayMessage.sortedContent != undefined)
+    console.log(displayMessage.sortedContent);
+  else console.error(displayMessage.errorOccured);
+  // try {
+  //   console.log(tailFunction(userArguments, fileOperation()));
+  // } catch (err) {
+  //   console.log(err.message);
+  // }
 };
 
 main();
