@@ -12,7 +12,7 @@ describe("tail", function() {
     it("should give filePath stated ", function() {
       const userArguments = ["tail.js", "filePath"];
       const actualValue = parseUserArgs(userArguments);
-      const expectedValue = { filePath: "filePath" };
+      const expectedValue = { filePath: "filePath", upto: -10 };
       assert.deepStrictEqual(actualValue, expectedValue);
     });
   });
@@ -33,17 +33,17 @@ describe("tail", function() {
   });
 
   describe("sortContent", function() {
-    it("should give last 10 line of file of more than 10 lines when lines are not specified", function() {
+    it("should give last 10 line of file of more than 10 lines ", function() {
       const content =
         "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20";
       assert.strictEqual(
-        sortContent(content),
+        sortContent(content, -10),
         "11\n12\n13\n14\n15\n16\n17\n18\n19\n20"
       );
     });
-    it("should give the total line of file if the content of file is less than 10  when lines are not specified", function() {
+    it("should give the total line of file if the content of file is less than 10  ", function() {
       const content = "1\n2\n3\n4\n5\n6";
-      assert.strictEqual(sortContent(content), "1\n2\n3\n4\n5\n6");
+      assert.strictEqual(sortContent(content, -10), "1\n2\n3\n4\n5\n6");
     });
   });
 

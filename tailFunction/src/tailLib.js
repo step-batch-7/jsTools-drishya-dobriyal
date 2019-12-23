@@ -1,16 +1,20 @@
 const parseUserArgs = function(userArgs) {
+  const upto = -10;
+  if (userArgs.includes("-n")) {
+    upto = userArgs[userArgs.indexOf("-n") + 1];
+  }
   const filePath = userArgs[1];
-  return { filePath };
+  return { filePath, upto };
 };
 
 const readContent = function(reader, filePath) {
   return { fileContent: reader(filePath, "utf8") };
 };
 
-const sortContent = function(content) {
+const sortContent = function(content, upto) {
   return content
     .split("\n")
-    .slice(-10)
+    .slice(upto)
     .join("\n");
 };
 
@@ -21,7 +25,9 @@ const tailFunction = function(userArgs, fileOperation) {
     return { errorOccured: `tail: ${filePath}: No such file or directory` };
   }
   const content = readContent(fileOperation.reader, filePath);
-  return { sortedContent: sortContent(content.fileContent) };
+  return {
+    sortedContent: sortContent(content.fileContent, parsedArgs.upto)
+  };
 };
 
 module.exports = {
