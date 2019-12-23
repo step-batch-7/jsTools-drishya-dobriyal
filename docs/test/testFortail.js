@@ -85,9 +85,10 @@ describe("tail", function() {
       };
       const userArguments = ["tail.js", "filePath"];
       const actualValue = tail(userArguments, fs);
-      assert.deepStrictEqual(actualValue, {
-        sortedContent: "11\n12\n13\n14\n15\n16\n17\n18\n19\n20"
-      });
+      assert.deepStrictEqual(
+        actualValue,
+        "11\n12\n13\n14\n15\n16\n17\n18\n19\n20"
+      );
     });
     it("should give error for file that does not exist", function() {
       fs = function() {

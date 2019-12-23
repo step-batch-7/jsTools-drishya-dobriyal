@@ -21,13 +21,8 @@ const tail = function(userArgs, fs) {
   const parsedArgs = parseUserArgs(userArgs);
   const filePath = parsedArgs.filePath;
   const content = readContent(fs().reader, fs().isFilePresent, filePath);
-  const errorOccured = content.error;
-  let sortedContent = content.fileContent;
-  if (sortedContent != undefined) {
-    sortedContent = sortContent(sortedContent);
-    return { sortedContent };
-  }
-  return { errorOccured };
+  const sortedContent = sortContent(content.fileContent);
+  return sortedContent;
 };
 
 module.exports = { parseUserArgs, readContent, sortContent, tail };

@@ -9,7 +9,7 @@ const fs = function() {
 const main = function() {
   const userArguments = process.argv.splice(1);
   const displayedMessage = tail(userArguments, fs);
-  console.log(displayedMessage.sortedContent);
+  console.log(displayedMessage);
 };
 
 main();
