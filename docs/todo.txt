@@ -16,6 +16,8 @@ steps :
           chai
   
   tasks : 
+
+ # =>  for existing file 
     done = parseUserArguments
     done = readContentOfFile
     done = select 10 lines from file
@@ -24,5 +26,15 @@ steps :
     done =  create an app test
   
   done = check the Links connection 
+     commandLineArguments => parseUserArguments => readContentOfFile => select 10 lines from file => display the content 
+
+
+# => for non exiting  file 
+     readContentOfFile
+     display the error 
+     
+     create an app test
+  
+ check the Links connection 
      commandLineArguments => parseUserArguments => readContentOfFile => select 10 lines from file => display the content 
   

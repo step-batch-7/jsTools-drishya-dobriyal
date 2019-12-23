@@ -5,7 +5,7 @@ const parseUserArgs = function(userArgs) {
 
 const readContent = function(reader, isFilePresent, filePath) {
   if (!isFilePresent(filePath)) {
-    return { error: `tail: ${filePath}: No such file or directory` };
+    throw new Error(`tail: ${filePath}: No such file or directory`);
   }
   return { fileContent: reader(filePath, "utf8") };
 };
@@ -21,9 +21,13 @@ const tail = function(userArgs, fs) {
   const parsedArgs = parseUserArgs(userArgs);
   const filePath = parsedArgs.filePath;
   const content = readContent(fs().reader, fs().isFilePresent, filePath);
-  const sortedContent = sortContent(content.fileContent);
   const errorOccured = content.error;
-  return { sortedContent, errorOccured };
+  let sortedContent = content.fileContent;
+  if (sortedContent != undefined) {
+    sortedContent = sortContent(sortedContent);
+    return { sortedContent };
+  }
+  return { errorOccured };
 };
 
 module.exports = { parseUserArgs, readContent, sortContent, tail };

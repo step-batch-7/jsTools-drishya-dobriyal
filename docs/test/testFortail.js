@@ -1,4 +1,5 @@
 const assert = require("chai").assert;
+const expect = require("chai").expect;
 const {
   parseUserArgs,
   readContent,
@@ -40,13 +41,17 @@ describe("tail", function() {
         assert.strictEqual(filePath, "filePath");
         return false;
       };
+      const errorExpected = new Error(
+        `tail: ${filePath}: No such file or directory`
+      );
       const reader = function() {
         return;
       };
-      const actualValue = readContent(reader, filePresent, filePath);
-      assert.deepStrictEqual(actualValue, {
-        error: `tail: filePath: No such file or directory`
-      });
+      try {
+        readContent(reader, filePresent, filePath);
+      } catch (err) {
+        expect(err.message).to.be.equal(errorExpected.message);
+      }
     });
   });
 
@@ -81,9 +86,27 @@ describe("tail", function() {
       const userArguments = ["tail.js", "filePath"];
       const actualValue = tail(userArguments, fs);
       assert.deepStrictEqual(actualValue, {
-        sortedContent: "11\n12\n13\n14\n15\n16\n17\n18\n19\n20",
-        errorOccured: undefined
+        sortedContent: "11\n12\n13\n14\n15\n16\n17\n18\n19\n20"
       });
+    });
+    it("should give error for file that does not exist", function() {
+      fs = function() {
+        const reader = () => {};
+        const isFilePresent = function(filePath) {
+          assert.strictEqual(filePath, "filePath");
+          return false;
+        };
+        return { reader, isFilePresent };
+      };
+      const userArguments = ["tail.js", "filePath"];
+      const errorExpected = new Error(
+        `tail: filePath: No such file or directory`
+      );
+      try {
+        tail(userArguments, fs);
+      } catch (err) {
+        expect(err.message).to.be.equal(errorExpected.message);
+      }
     });
   });
 });
