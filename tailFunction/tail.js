@@ -13,11 +13,6 @@ const main = function() {
   if (displayMessage.sortedContent != undefined)
     console.log(displayMessage.sortedContent);
   else console.error(displayMessage.errorOccured);
-  // try {
-  //   console.log(tailFunction(userArguments, fileOperation()));
-  // } catch (err) {
-  //   console.log(err.message);
-  // }
 };
 
 main();
