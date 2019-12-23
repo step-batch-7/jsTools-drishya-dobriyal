@@ -1,0 +1,2 @@
+node tail.js fileNotExisting
+tail: fileNotExisting: No such file or directory
