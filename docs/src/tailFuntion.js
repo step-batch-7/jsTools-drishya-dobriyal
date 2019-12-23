@@ -24,7 +24,7 @@ const sortContent = function(content) {
     .join("\n");
 };
 
-const tail = function(userArgs) {
+const tail = function(userArgs, fs) {
   const parsedArgs = parseUserArgs(userArgs);
   const filePath = parsedArgs.filePath;
   const content = readContent(fs().reader, fs().isFilePresent, filePath);
