@@ -92,7 +92,6 @@ describe("tail", function() {
         errorOccured: `tail: filePath: No such file or directory`
       });
     });
-
     it("should give illegal count error if -n does not have num after it", function() {
       const fileOperation = function() {
         const reader = () => {};
