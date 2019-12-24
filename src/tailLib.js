@@ -43,7 +43,7 @@ const sortContent = function(content, upto) {
 
 const tailFunction = function(userArgs, fileOperation) {
   const stateError = findError(userArgs, fileOperation.isFilePresent);
-  if (stateError.hasOwnProperty("errorOccured")) return stateError;
+  if (stateError.errorOccured) return stateError;
   const parsedArgs = parseUserArgs(userArgs);
   const content = readContent(fileOperation.reader, parsedArgs.filePath);
   return {
