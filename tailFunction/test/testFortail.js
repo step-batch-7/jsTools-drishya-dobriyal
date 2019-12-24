@@ -131,5 +131,19 @@ describe("tail", function() {
         errorOccured: `tail: illegal offset -- $`
       });
     });
+    it("should give no such directory error if file does not exist ", function() {
+      const fileOperation = function() {
+        const reader = () => {};
+        const isFilePresent = function(filePath) {
+          assert.strictEqual(filePath, "nonExistingFilePath");
+          return false;
+        };
+        return { reader, isFilePresent };
+      };
+      const userArguments = ["tail.js", "-n", "-3", "nonExistingFilePath"];
+      assert.deepStrictEqual(tailFunction(userArguments, fileOperation()), {
+        errorOccured: `tail: nonExistingFilePath: No such file or directory`
+      });
+    });
   });
 });
