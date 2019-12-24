@@ -1,9 +1,12 @@
 const parseUserArgs = function(userArgs) {
-  const upto = -10;
-  if (userArgs.includes("-n")) {
-    upto = userArgs[userArgs.indexOf("-n") + 1];
+  let upto = -10;
+  let filePath = userArgs[1];
+  if (userArgs[1] == "-n") {
+    upto = +userArgs[2];
+    if (!Number.isInteger(upto))
+      return { errorOccured: `tail: illegal offset -- $` };
+    filePath = userArgs[3];
   }
-  const filePath = userArgs[1];
   return { filePath, upto };
 };
 
@@ -20,6 +23,9 @@ const sortContent = function(content, upto) {
 
 const tailFunction = function(userArgs, fileOperation) {
   const parsedArgs = parseUserArgs(userArgs);
+  if (parsedArgs.hasOwnProperty("errorOccured")) {
+    return parsedArgs;
+  }
   const filePath = parsedArgs.filePath;
   if (!fileOperation.isFilePresent(filePath)) {
     return { errorOccured: `tail: ${filePath}: No such file or directory` };

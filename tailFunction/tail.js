@@ -11,8 +11,8 @@ const main = function() {
   const userArguments = process.argv.splice(1);
   const displayMessage = tailFunction(userArguments, fileOperation());
   if (displayMessage.sortedContent != undefined)
-    console.log(displayMessage.sortedContent);
-  else console.error(displayMessage.errorOccured);
+    return console.log(displayMessage.sortedContent);
+  return console.error(displayMessage.errorOccured);
 };
 
 main();

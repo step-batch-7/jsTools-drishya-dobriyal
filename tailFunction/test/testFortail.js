@@ -9,10 +9,22 @@ const {
 
 describe("tail", function() {
   describe("parseUserArgs", function() {
-    it("should give filePath stated ", function() {
+    it("should give filePath stated and default value if -n is not specified ", function() {
       const userArguments = ["tail.js", "filePath"];
       const actualValue = parseUserArgs(userArguments);
       const expectedValue = { filePath: "filePath", upto: -10 };
+      assert.deepStrictEqual(actualValue, expectedValue);
+    });
+    it("should give filePath and num of lines as stated ", function() {
+      const userArguments = ["tail.js", "-n", "3", "filePath"];
+      const actualValue = parseUserArgs(userArguments);
+      const expectedValue = { filePath: "filePath", upto: 3 };
+      assert.deepStrictEqual(actualValue, expectedValue);
+    });
+    it("should give error if the after tail.js and -n there is not a num ", function() {
+      const userArguments = ["tail.js", "-n", "$", "filePath"];
+      const actualValue = parseUserArgs(userArguments);
+      const expectedValue = { errorOccured: `tail: illegal offset -- $` };
       assert.deepStrictEqual(actualValue, expectedValue);
     });
   });
@@ -41,7 +53,7 @@ describe("tail", function() {
         "11\n12\n13\n14\n15\n16\n17\n18\n19\n20"
       );
     });
-    it("should give the total line of file if the content of file is less than 10  ", function() {
+    it("should give the total line of file if the content of file is less than the line num from which the sorting should be started ", function() {
       const content = "1\n2\n3\n4\n5\n6";
       assert.strictEqual(sortContent(content, -10), "1\n2\n3\n4\n5\n6");
     });
@@ -76,14 +88,24 @@ describe("tail", function() {
         return { reader, isFilePresent };
       };
       const userArguments = ["tail.js", "filePath"];
-      const errorExpected = new Error(
-        `tail: filePath: No such file or directory`
-      );
-      try {
-        tailFunction(userArguments, fileOperation());
-      } catch (err) {
-        expect(err.message).to.be.equal(errorExpected.message);
-      }
+      assert.deepStrictEqual(tailFunction(userArguments, fileOperation()), {
+        errorOccured: `tail: filePath: No such file or directory`
+      });
+    });
+
+    it("should give illegal count error if -n does not have num after it", function() {
+      const fileOperation = function() {
+        const reader = () => {};
+        const isFilePresent = function(filePath) {
+          assert.strictEqual(filePath, "filePath");
+          return false;
+        };
+        return { reader, isFilePresent };
+      };
+      const userArguments = ["tail.js", "-n", "$", "filePath"];
+      assert.deepStrictEqual(tailFunction(userArguments, fileOperation()), {
+        errorOccured: `tail: illegal offset -- $`
+      });
     });
   });
 });
