@@ -3,34 +3,23 @@ const getCountValue = function(value) {
   return value;
 };
 
-const findError = function(userArgs, isFilePresent) {
-  if (userArgs.includes("-n") && !Number.isInteger(+userArgs[2])) {
-    illegalCount = getCountValue(userArgs[2]);
-    return { errorOccured: `tail: illegal offset -- ${illegalCount}` };
-  }
-  if (userArgs.includes("-n") && !isFilePresent(userArgs[3]))
-    return {
-      errorOccured: `tail: ${userArgs[3]}: No such file or directory`
-    };
-  if (!userArgs.includes("-n") && !isFilePresent(userArgs[1])) {
-    return {
-      errorOccured: `tail: ${userArgs[1]}: No such file or directory`
-    };
-  }
-  return {};
-};
-
 const parseUserArgs = function(userArgs) {
   let upto = -10;
   let filePath = userArgs[1];
   if (userArgs[1] == "-n") {
-    upto = -getCountValue(userArgs[2]);
+    upto = getCountValue(userArgs[2]);
+    if (!Number.isInteger(+userArgs[2])) {
+      return { errorOccured: `tail: illegal offset -- ${upto}` };
+    }
     filePath = userArgs[3];
+    upto = -upto;
   }
   return { filePath, upto };
 };
 
-const readContent = function(reader, filePath) {
+const readContent = function(reader, isFilePresent, filePath) {
+  if (!isFilePresent(filePath))
+    return { errorOccured: `tail: ${filePath}: No such file or directory` };
   return { fileContent: reader(filePath, "utf8") };
 };
 
@@ -42,10 +31,14 @@ const sortContent = function(content, upto) {
 };
 
 const tailFunction = function(userArgs, fileOperation) {
-  const stateError = findError(userArgs, fileOperation.isFilePresent);
-  if (stateError.errorOccured) return stateError;
   const parsedArgs = parseUserArgs(userArgs);
-  const content = readContent(fileOperation.reader, parsedArgs.filePath);
+  if (parsedArgs.errorOccured) return parsedArgs;
+  const content = readContent(
+    fileOperation.reader,
+    fileOperation.isFilePresent,
+    parsedArgs.filePath
+  );
+  if (content.errorOccured) return content;
   return {
     sortedContent: sortContent(content.fileContent, parsedArgs.upto)
   };
@@ -55,6 +48,5 @@ module.exports = {
   parseUserArgs,
   readContent,
   sortContent,
-  tailFunction,
-  findError
+  tailFunction
 };

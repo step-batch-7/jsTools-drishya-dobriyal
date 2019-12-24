@@ -29,31 +29,6 @@ describe("tail", function() {
     });
   });
 
-  describe("findError", function() {
-    it("should return an an object with error for userAruments for illegal count with '-' at starting ", function() {
-      assert.deepStrictEqual(findError(["tail.js", "-n", "-$", "filePath"]), {
-        errorOccured: "tail: illegal offset -- $"
-      });
-    });
-    it("should return an an object with error for userAruments for illegal count without '-' at starting ", function() {
-      assert.deepStrictEqual(findError(["tail.js", "-n", "$", "filePath"]), {
-        errorOccured: "tail: illegal offset -- $"
-      });
-    });
-    it("should give error no such directory if the file is not present ", function() {
-      const isFilePresent = function(filePath) {
-        assert.strictEqual(filePath, "filePath");
-        return false;
-      };
-      assert.deepStrictEqual(
-        findError(["tail.js", "filePath"], isFilePresent),
-        {
-          errorOccured: "tail: filePath: No such file or directory"
-        }
-      );
-    });
-  });
-
   describe("readContent", function() {
     it("should give the content of the file if file exist ", function() {
       const reader = function(filePath) {
@@ -62,9 +37,29 @@ describe("tail", function() {
         return fileContent;
       };
       const filePath = "filePath";
-      const actualValue = readContent(reader, filePath);
+      const isFilePresent = function(filePath) {
+        assert.strictEqual(filePath, "filePath");
+        return true;
+      };
+      const actualValue = readContent(reader, isFilePresent, filePath);
       assert.deepStrictEqual(actualValue, {
         fileContent: "file content's in string "
+      });
+    });
+    it("should give the error  if file does not exist ", function() {
+      const reader = function(filePath) {
+        assert.strictEqual(filePath, "filePath");
+        const fileContent = "file content's in string ";
+        return fileContent;
+      };
+      const filePath = "filePath";
+      const isFilePresent = function(filePath) {
+        assert.strictEqual(filePath, "filePath");
+        return false;
+      };
+      const actualValue = readContent(reader, isFilePresent, filePath);
+      assert.deepStrictEqual(actualValue, {
+        errorOccured: "tail: filePath: No such file or directory"
       });
     });
   });
