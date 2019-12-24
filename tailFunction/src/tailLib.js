@@ -1,6 +1,9 @@
 const findError = function(userArgs, isFilePresent) {
   if (userArgs.includes("-n") && !Number.isInteger(+userArgs[2])) {
-    const illegalCount = userArgs[2].slice(1);
+    let illegalCount = userArgs[2];
+    illegalCount.includes("-")
+      ? (illegalCount = illegalCount.slice(1))
+      : illegalCount;
     return { errorOccured: `tail: illegal offset -- ${illegalCount}` };
   }
   if (!isFilePresent(userArgs[1])) {

@@ -24,8 +24,13 @@ describe("tail", function() {
   });
 
   describe("findError", function() {
-    it("should return an an object with error for userAruments for illegal count", function() {
+    it("should return an an object with error for userAruments for illegal count with '-' at starting ", function() {
       assert.deepStrictEqual(findError(["tail.js", "-n", "-$", "filePath"]), {
+        errorOccured: "tail: illegal offset -- $"
+      });
+    });
+    it("should return an an object with error for userAruments for illegal count without '-' at starting ", function() {
+      assert.deepStrictEqual(findError(["tail.js", "-n", "$", "filePath"]), {
         errorOccured: "tail: illegal offset -- $"
       });
     });
