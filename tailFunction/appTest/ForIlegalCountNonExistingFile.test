@@ -1,0 +1,2 @@
+node tail.js -n $ nonExistinFile
+tail: illegal offset -- $

@@ -15,10 +15,16 @@ describe("tail", function() {
       const expectedValue = { filePath: "filePath", upto: -10 };
       assert.deepStrictEqual(actualValue, expectedValue);
     });
-    it("should give filePath and num of lines as stated ", function() {
+    it("should give filePath and num of lines as stated if - doesnot follow number ", function() {
       const userArguments = ["tail.js", "-n", "3", "filePath"];
       const actualValue = parseUserArgs(userArguments);
-      const expectedValue = { filePath: "filePath", upto: 3 };
+      const expectedValue = { filePath: "filePath", upto: -3 };
+      assert.deepStrictEqual(actualValue, expectedValue);
+    });
+    it("should give filePath and num of lines as stated and - is there with number", function() {
+      const userArguments = ["tail.js", "-n", "-3", "filePath"];
+      const actualValue = parseUserArgs(userArguments);
+      const expectedValue = { filePath: "filePath", upto: -3 };
       assert.deepStrictEqual(actualValue, expectedValue);
     });
   });

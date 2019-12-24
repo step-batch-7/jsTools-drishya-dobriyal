@@ -1,0 +1,4 @@
+node tail.js -n -3 ./appTest/fileMoreThan10
+8
+9
+10

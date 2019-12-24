@@ -1,13 +1,22 @@
 const findError = function(userArgs, isFilePresent) {
-  if (userArgs.includes("-n") && !Number.isInteger(+userArgs[2])) {
-    let illegalCount = userArgs[2];
-    illegalCount.includes("-")
-      ? (illegalCount = illegalCount.slice(1))
-      : illegalCount;
-    return { errorOccured: `tail: illegal offset -- ${illegalCount}` };
+  if (userArgs.includes("-n")) {
+    if (!Number.isInteger(+userArgs[2])) {
+      userArgs[2][0].includes("-")
+        ? (illegalCount = userArgs[2].slice(1))
+        : (illegalCount = userArgs[2]);
+      return { errorOccured: `tail: illegal offset -- ${illegalCount}` };
+    }
+    if (isFilePresent(userArgs[3])) {
+      return {};
+    }
+    return {
+      errorOccured: `tail: ${userArgs[3]}: No such file or directory`
+    };
   }
   if (!isFilePresent(userArgs[1])) {
-    return { errorOccured: `tail: ${userArgs[1]}: No such file or directory` };
+    return {
+      errorOccured: `tail: ${userArgs[1]}: No such file or directory`
+    };
   }
   return {};
 };
@@ -16,7 +25,7 @@ const parseUserArgs = function(userArgs) {
   let upto = -10;
   let filePath = userArgs[1];
   if (userArgs[1] == "-n") {
-    upto = +userArgs[2];
+    userArgs[2].includes("-") ? (upto = +userArgs[2]) : (upto = -+userArgs[2]);
     filePath = userArgs[3];
   }
   return { filePath, upto };
