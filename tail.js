@@ -10,9 +10,7 @@ const fileOperation = function() {
 const main = function() {
   const userArguments = process.argv.splice(1);
   const displayMessage = tailFunction(userArguments, fileOperation());
-  if (displayMessage.sortedContent)
-    return console.log(displayMessage.sortedContent);
-  return console.error(displayMessage.errorOccured);
+  displayMessage.displayer(displayMessage.content);
 };
 
 main();

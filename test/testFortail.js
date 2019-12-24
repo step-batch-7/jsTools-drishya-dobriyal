@@ -43,23 +43,7 @@ describe("tail", function() {
       };
       const actualValue = readContent(reader, isFilePresent, filePath);
       assert.deepStrictEqual(actualValue, {
-        fileContent: "file content's in string "
-      });
-    });
-    it("should give the error  if file does not exist ", function() {
-      const reader = function(filePath) {
-        assert.strictEqual(filePath, "filePath");
-        const fileContent = "file content's in string ";
-        return fileContent;
-      };
-      const filePath = "filePath";
-      const isFilePresent = function(filePath) {
-        assert.strictEqual(filePath, "filePath");
-        return false;
-      };
-      const actualValue = readContent(reader, isFilePresent, filePath);
-      assert.deepStrictEqual(actualValue, {
-        errorOccured: "tail: filePath: No such file or directory"
+        content: "file content's in string "
       });
     });
   });
@@ -95,7 +79,8 @@ describe("tail", function() {
       const userArguments = ["tail.js", "filePath"];
       const actualValue = tailFunction(userArguments, fileOperation());
       assert.deepStrictEqual(actualValue, {
-        sortedContent: "11\n12\n13\n14\n15\n16\n17\n18\n19\n20"
+        content: "11\n12\n13\n14\n15\n16\n17\n18\n19\n20",
+        displayer: console.log
       });
     });
     it("should give error for file that does not exist", function() {
@@ -109,7 +94,8 @@ describe("tail", function() {
       };
       const userArguments = ["tail.js", "filePath"];
       assert.deepStrictEqual(tailFunction(userArguments, fileOperation()), {
-        errorOccured: `tail: filePath: No such file or directory`
+        content: `tail: filePath: No such file or directory`,
+        displayer: console.error
       });
     });
     it("should give illegal count error if -n does not have num after it", function() {
@@ -123,7 +109,8 @@ describe("tail", function() {
       };
       const userArguments = ["tail.js", "-n", "-$", "filePath"];
       assert.deepStrictEqual(tailFunction(userArguments, fileOperation()), {
-        errorOccured: `tail: illegal offset -- $`
+        content: `tail: illegal offset -- $`,
+        displayer: console.error
       });
     });
     it("should give no such directory error if file does not exist ", function() {
@@ -137,7 +124,8 @@ describe("tail", function() {
       };
       const userArguments = ["tail.js", "-n", "-3", "nonExistingFilePath"];
       assert.deepStrictEqual(tailFunction(userArguments, fileOperation()), {
-        errorOccured: `tail: nonExistingFilePath: No such file or directory`
+        content: `tail: nonExistingFilePath: No such file or directory`,
+        displayer: console.error
       });
     });
   });

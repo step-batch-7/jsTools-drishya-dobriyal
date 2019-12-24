@@ -9,7 +9,10 @@ const parseUserArgs = function(userArgs) {
   if (userArgs[1] == "-n") {
     upto = getCountValue(userArgs[2]);
     if (!Number.isInteger(+userArgs[2])) {
-      return { errorOccured: `tail: illegal offset -- ${upto}` };
+      return {
+        errorOccured: `tail: illegal offset -- ${upto}`,
+        displayer: console.error
+      };
     }
     filePath = userArgs[3];
     upto = -upto;
@@ -19,8 +22,11 @@ const parseUserArgs = function(userArgs) {
 
 const readContent = function(reader, isFilePresent, filePath) {
   if (!isFilePresent(filePath))
-    return { errorOccured: `tail: ${filePath}: No such file or directory` };
-  return { fileContent: reader(filePath, "utf8") };
+    return {
+      errorOccured: `tail: ${filePath}: No such file or directory`,
+      displayer: console.error
+    };
+  return { content: reader(filePath, "utf8") };
 };
 
 const sortContent = function(content, upto) {
@@ -32,15 +38,18 @@ const sortContent = function(content, upto) {
 
 const tailFunction = function(userArgs, fileOperation) {
   const parsedArgs = parseUserArgs(userArgs);
-  if (parsedArgs.errorOccured) return parsedArgs;
-  const content = readContent(
+  if (parsedArgs.errorOccured)
+    return { displayer: console.error, content: parsedArgs.errorOccured };
+  const fileContent = readContent(
     fileOperation.reader,
     fileOperation.isFilePresent,
     parsedArgs.filePath
   );
-  if (content.errorOccured) return content;
+  if (fileContent.errorOccured)
+    return { displayer: console.error, content: fileContent.errorOccured };
   return {
-    sortedContent: sortContent(content.fileContent, parsedArgs.upto)
+    displayer: console.log,
+    content: sortContent(fileContent.content, parsedArgs.upto)
   };
 };
 
