@@ -1,10 +1,10 @@
 const assert = require("chai").assert;
-const expect = require("chai").expect;
 const {
   parseUserArgs,
   readContent,
   sortContent,
-  tailFunction
+  tailFunction,
+  findError
 } = require("../src/tailLib.js");
 
 describe("tail", function() {
@@ -21,11 +21,25 @@ describe("tail", function() {
       const expectedValue = { filePath: "filePath", upto: 3 };
       assert.deepStrictEqual(actualValue, expectedValue);
     });
-    it("should give error if the after tail.js and -n there is not a num ", function() {
-      const userArguments = ["tail.js", "-n", "$", "filePath"];
-      const actualValue = parseUserArgs(userArguments);
-      const expectedValue = { errorOccured: `tail: illegal offset -- $` };
-      assert.deepStrictEqual(actualValue, expectedValue);
+  });
+
+  describe("findError", function() {
+    it("should return an an object with error for userAruments for illegal count", function() {
+      assert.deepStrictEqual(findError(["tail.js", "-n", "-$", "filePath"]), {
+        errorOccured: "tail: illegal offset -- $"
+      });
+    });
+    it("should give error no such directory if the file is not present ", function() {
+      const isFilePresent = function(filePath) {
+        assert.strictEqual(filePath, "filePath");
+        return false;
+      };
+      assert.deepStrictEqual(
+        findError(["tail.js", "filePath"], isFilePresent),
+        {
+          errorOccured: "tail: filePath: No such file or directory"
+        }
+      );
     });
   });
 
@@ -101,7 +115,7 @@ describe("tail", function() {
         };
         return { reader, isFilePresent };
       };
-      const userArguments = ["tail.js", "-n", "$", "filePath"];
+      const userArguments = ["tail.js", "-n", "-$", "filePath"];
       assert.deepStrictEqual(tailFunction(userArguments, fileOperation()), {
         errorOccured: `tail: illegal offset -- $`
       });
