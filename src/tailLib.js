@@ -1,6 +1,6 @@
 const getCountValue = function(value) {
-  if (value[0] == "-") return value.slice(1);
-  return value;
+  const posibleValues = { "-": value.slice(1) };
+  return posibleValues[value[0]] || value;
 };
 
 const parseUserArgs = function(userArgs) {
@@ -57,5 +57,6 @@ module.exports = {
   parseUserArgs,
   readContent,
   sortContent,
-  tailFunction
+  tailFunction,
+  getCountValue
 };

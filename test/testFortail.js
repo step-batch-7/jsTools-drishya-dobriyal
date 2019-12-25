@@ -4,10 +4,19 @@ const {
   readContent,
   sortContent,
   tailFunction,
-  findError
+  getCountValue
 } = require("../src/tailLib.js");
 
 describe("tail", function() {
+  describe("getCountValue", function() {
+    it("should return value such that  - is removed from value", function() {
+      assert.strictEqual(getCountValue("-2"), "2");
+    });
+    it("should return value if no - sign in starting", function() {
+      assert.strictEqual(getCountValue("2"), "2");
+    });
+  });
+
   describe("parseUserArgs", function() {
     it("should give filePath stated and default value if -n is not specified ", function() {
       const userArguments = ["tail.js", "filePath"];
@@ -63,7 +72,7 @@ describe("tail", function() {
     });
   });
 
-  describe("tail", function() {
+  describe("tailFunction", function() {
     it("should give last 10 lines of a file that exist ", function() {
       const fileOperation = function() {
         const reader = function(filePath) {
@@ -81,21 +90,6 @@ describe("tail", function() {
       assert.deepStrictEqual(actualValue, {
         content: "11\n12\n13\n14\n15\n16\n17\n18\n19\n20",
         displayer: console.log
-      });
-    });
-    it("should give error for file that does not exist", function() {
-      const fileOperation = function() {
-        const reader = () => {};
-        const isFilePresent = function(filePath) {
-          assert.strictEqual(filePath, "filePath");
-          return false;
-        };
-        return { reader, isFilePresent };
-      };
-      const userArguments = ["tail.js", "filePath"];
-      assert.deepStrictEqual(tailFunction(userArguments, fileOperation()), {
-        content: `tail: filePath: No such file or directory`,
-        displayer: console.error
       });
     });
     it("should give illegal count error if -n does not have num after it", function() {
