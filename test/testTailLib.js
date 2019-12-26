@@ -89,7 +89,7 @@ describe("tail", function() {
       const actualValue = tailFunction(userArguments, fileOperation());
       assert.deepStrictEqual(actualValue, {
         content: "11\n12\n13\n14\n15\n16\n17\n18\n19\n20",
-        displayer: console.log
+        displayer: "forOutput"
       });
     });
     it("should give illegal count error if -n does not have num after it", function() {
@@ -104,7 +104,7 @@ describe("tail", function() {
       const userArguments = ["tail.js", "-n", "-$", "filePath"];
       assert.deepStrictEqual(tailFunction(userArguments, fileOperation()), {
         content: `tail: illegal offset -- $`,
-        displayer: console.error
+        displayer: "forError"
       });
     });
     it("should give no such directory error if file does not exist ", function() {
@@ -119,7 +119,7 @@ describe("tail", function() {
       const userArguments = ["tail.js", "-n", "-3", "nonExistingFilePath"];
       assert.deepStrictEqual(tailFunction(userArguments, fileOperation()), {
         content: `tail: nonExistingFilePath: No such file or directory`,
-        displayer: console.error
+        displayer: "forError"
       });
     });
   });

@@ -11,7 +11,7 @@ const parseUserArgs = function(userArgs) {
     if (!Number.isInteger(+userArgs[2])) {
       return {
         errorOccured: `tail: illegal offset -- ${upto}`,
-        displayer: console.error
+        displayer: "forError"
       };
     }
     filePath = userArgs[3];
@@ -24,7 +24,7 @@ const readContent = function(reader, isFilePresent, filePath) {
   if (!isFilePresent(filePath))
     return {
       errorOccured: `tail: ${filePath}: No such file or directory`,
-      displayer: console.error
+      displayer: "forError"
     };
   return { content: reader(filePath, "utf8") };
 };
