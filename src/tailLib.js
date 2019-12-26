@@ -39,16 +39,16 @@ const sortContent = function(content, upto) {
 const tailFunction = function(userArgs, fileOperation) {
   const parsedArgs = parseUserArgs(userArgs);
   if (parsedArgs.errorOccured)
-    return { displayer: console.error, content: parsedArgs.errorOccured };
+    return { displayer: "forError", content: parsedArgs.errorOccured };
   const fileContent = readContent(
     fileOperation.reader,
     fileOperation.isFilePresent,
     parsedArgs.filePath
   );
   if (fileContent.errorOccured)
-    return { displayer: console.error, content: fileContent.errorOccured };
+    return { displayer: "forError", content: fileContent.errorOccured };
   return {
-    displayer: console.log,
+    displayer: "forOutput",
     content: sortContent(fileContent.content, parsedArgs.upto)
   };
 };

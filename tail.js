@@ -9,8 +9,9 @@ const fileOperation = function() {
 
 const main = function() {
   const userArguments = process.argv.splice(1);
-  const displayMessage = tailFunction(userArguments, fileOperation());
-  displayMessage.displayer(displayMessage.content);
+  const displayerStream = { forError: console.error, forOutput: console.log };
+  const { displayer, content } = tailFunction(userArguments, fileOperation());
+  displayerStream[displayer](content);
 };
 
 main();
