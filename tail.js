@@ -8,7 +8,7 @@ const fileOperation = function() {
 };
 
 const main = function() {
-  const userArguments = process.argv.splice(1);
+  const userArguments = process.argv.slice(1);
   const displayerStream = { forError: console.error, forOutput: console.log };
   const { displayer, content } = tailFunction(userArguments, fileOperation());
   displayerStream[displayer](content);

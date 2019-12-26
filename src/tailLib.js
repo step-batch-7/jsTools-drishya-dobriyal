@@ -10,7 +10,7 @@ const parseUserArgs = function(userArgs) {
     upto = getCountValue(userArgs[2]);
     if (!Number.isInteger(+userArgs[2])) {
       return {
-        errorOccured: `tail: illegal offset -- ${upto}`,
+        content: `tail: illegal offset -- ${upto}`,
         displayer: "forError"
       };
     }
@@ -23,10 +23,10 @@ const parseUserArgs = function(userArgs) {
 const readContent = function(reader, isFilePresent, filePath) {
   if (!isFilePresent(filePath))
     return {
-      errorOccured: `tail: ${filePath}: No such file or directory`,
+      content: `tail: ${filePath}: No such file or directory`,
       displayer: "forError"
     };
-  return { content: reader(filePath, "utf8") };
+  return { content: reader(filePath, "utf8"), displayer: "forOutput" };
 };
 
 const sortContent = function(content, upto) {
@@ -38,15 +38,13 @@ const sortContent = function(content, upto) {
 
 const tailFunction = function(userArgs, fileOperation) {
   const parsedArgs = parseUserArgs(userArgs);
-  if (parsedArgs.errorOccured)
-    return { displayer: "forError", content: parsedArgs.errorOccured };
+  if (parsedArgs.displayer === "forError") return parsedArgs;
   const fileContent = readContent(
     fileOperation.reader,
     fileOperation.isFilePresent,
     parsedArgs.filePath
   );
-  if (fileContent.errorOccured)
-    return { displayer: "forError", content: fileContent.errorOccured };
+  if (fileContent.displayer === "forError") return fileContent;
   return {
     displayer: "forOutput",
     content: sortContent(fileContent.content, parsedArgs.upto)

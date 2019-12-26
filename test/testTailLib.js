@@ -36,6 +36,15 @@ describe("tail", function() {
       const expectedValue = { filePath: "filePath", upto: -3 };
       assert.deepStrictEqual(actualValue, expectedValue);
     });
+    it("should give illegal offset if userArguments after -n is not a number", function() {
+      const userArguments = ["tail.js", "-n", "-$", "filePath"];
+      const actualValue = parseUserArgs(userArguments);
+      const expectedValue = {
+        content: "tail: illegal offset -- $",
+        displayer: "forError"
+      };
+      assert.deepStrictEqual(actualValue, expectedValue);
+    });
   });
 
   describe("readContent", function() {
@@ -52,7 +61,23 @@ describe("tail", function() {
       };
       const actualValue = readContent(reader, isFilePresent, filePath);
       assert.deepStrictEqual(actualValue, {
-        content: "file content's in string "
+        content: "file content's in string ",
+        displayer: "forOutput"
+      });
+    });
+    it("should give error if file doesnot exist  ", function() {
+      const reader = function(filePath) {
+        return;
+      };
+      const filePath = "filePath";
+      const isFilePresent = function(filePath) {
+        assert.strictEqual(filePath, "filePath");
+        return false;
+      };
+      const actualValue = readContent(reader, isFilePresent, filePath);
+      assert.deepStrictEqual(actualValue, {
+        content: `tail: filePath: No such file or directory`,
+        displayer: "forError"
       });
     });
   });
