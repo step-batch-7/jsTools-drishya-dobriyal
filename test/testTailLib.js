@@ -3,7 +3,7 @@ const {
   parseUserArgs,
   readContent,
   sortContent,
-  tailFunction,
+  performTail,
   getCountValue
 } = require("../src/tailLib.js");
 
@@ -14,6 +14,9 @@ describe("tail", function() {
     });
     it("should return value if no - sign in starting", function() {
       assert.strictEqual(getCountValue("2"), "2");
+    });
+    it.skip("should return value such that  + is removed from value", function() {
+      assert.strictEqual(getCountValue("+2"), "2");
     });
   });
 
@@ -36,12 +39,17 @@ describe("tail", function() {
       const expectedValue = { filePath: "filePath", upto: -3 };
       assert.deepStrictEqual(actualValue, expectedValue);
     });
+    it.skip("should give filePath and num of lines as stated and + is there with number", function() {
+      const userArguments = ["tail.js", "-n", "+3", "filePath"];
+      const actualValue = parseUserArgs(userArguments);
+      const expectedValue = { filePath: "filePath", upto: 3 };
+      assert.deepStrictEqual(actualValue, expectedValue);
+    });
     it("should give illegal offset if userArguments after -n is not a number", function() {
       const userArguments = ["tail.js", "-n", "-$", "filePath"];
       const actualValue = parseUserArgs(userArguments);
       const expectedValue = {
-        content: "tail: illegal offset -- $",
-        displayer: "forError"
+        errorOccured: "tail: illegal offset -- $"
       };
       assert.deepStrictEqual(actualValue, expectedValue);
     });
@@ -61,8 +69,7 @@ describe("tail", function() {
       };
       const actualValue = readContent(reader, isFilePresent, filePath);
       assert.deepStrictEqual(actualValue, {
-        content: "file content's in string ",
-        displayer: "forOutput"
+        content: "file content's in string "
       });
     });
     it("should give error if file doesnot exist  ", function() {
@@ -76,8 +83,7 @@ describe("tail", function() {
       };
       const actualValue = readContent(reader, isFilePresent, filePath);
       assert.deepStrictEqual(actualValue, {
-        content: `tail: filePath: No such file or directory`,
-        displayer: "forError"
+        errorOccured: `tail: filePath: No such file or directory`
       });
     });
   });
@@ -97,7 +103,7 @@ describe("tail", function() {
     });
   });
 
-  describe("tailFunction", function() {
+  describe("performTail", function() {
     it("should give last 10 lines of a file that exist ", function() {
       const fileOperation = function() {
         const reader = function(filePath) {
@@ -111,7 +117,7 @@ describe("tail", function() {
         return { reader, isFilePresent };
       };
       const userArguments = ["tail.js", "filePath"];
-      const actualValue = tailFunction(userArguments, fileOperation());
+      const actualValue = performTail(userArguments, fileOperation());
       assert.deepStrictEqual(actualValue, {
         content: "11\n12\n13\n14\n15\n16\n17\n18\n19\n20",
         displayer: "forOutput"
@@ -127,22 +133,24 @@ describe("tail", function() {
         return { reader, isFilePresent };
       };
       const userArguments = ["tail.js", "-n", "-$", "filePath"];
-      assert.deepStrictEqual(tailFunction(userArguments, fileOperation()), {
+      assert.deepStrictEqual(performTail(userArguments, fileOperation()), {
         content: `tail: illegal offset -- $`,
         displayer: "forError"
       });
     });
     it("should give no such directory error if file does not exist ", function() {
+      const userArguments = ["tail.js", "-n", "-4", "nonExistingFilePath"];
       const fileOperation = function() {
-        const reader = () => {};
-        const isFilePresent = function(filePath) {
+        const reader = () => {
+          return;
+        };
+        const isFilePresent = filePath => {
           assert.strictEqual(filePath, "nonExistingFilePath");
           return false;
         };
         return { reader, isFilePresent };
       };
-      const userArguments = ["tail.js", "-n", "-3", "nonExistingFilePath"];
-      assert.deepStrictEqual(tailFunction(userArguments, fileOperation()), {
+      assert.deepStrictEqual(performTail(userArguments, fileOperation()), {
         content: `tail: nonExistingFilePath: No such file or directory`,
         displayer: "forError"
       });

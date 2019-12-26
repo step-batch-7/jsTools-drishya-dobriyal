@@ -1,4 +1,4 @@
-const { tailFunction } = require("./src/tailLib.js");
+const { performTail } = require("./src/tailLib.js");
 
 const fileOperation = function() {
   const fs = require("fs");
@@ -10,7 +10,7 @@ const fileOperation = function() {
 const main = function() {
   const userArguments = process.argv.slice(1);
   const displayerStream = { forError: console.error, forOutput: console.log };
-  const { displayer, content } = tailFunction(userArguments, fileOperation());
+  const { displayer, content } = performTail(userArguments, fileOperation());
   displayerStream[displayer](content);
 };
 
