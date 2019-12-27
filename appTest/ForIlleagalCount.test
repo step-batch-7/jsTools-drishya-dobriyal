@@ -1,2 +1,2 @@
 node tail.js -n -$ file
-tail: illegal offset -- $
+tail: illegal offset -- -$

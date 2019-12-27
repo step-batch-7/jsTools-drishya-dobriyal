@@ -1,55 +1,74 @@
-const getCountValue = function(value) {
-  const posibleValues = { "-": value.slice(1) };
-  return posibleValues[value[0]] || value;
+const isInteger = function(countOption) {
+  return Number.isInteger(+countOption);
+};
+
+const isPairValid = function(firstTerm, secondTerm) {
+  return firstTerm == "-n" && isInteger(secondTerm);
+};
+
+const validOption = function(userArgs) {
+  const isFirstOptionValid = isPairValid(
+    userArgs[1].slice(0, 2),
+    userArgs[1].slice(2)
+  );
+  return isFirstOptionValid;
 };
 
 const parseUserArgs = function(userArgs) {
-  let upto = -10;
-  let filePath = userArgs[1];
-  if (userArgs[1] == "-n") {
-    upto = getCountValue(userArgs[2]);
-    if (!Number.isInteger(+userArgs[2])) {
-      return {
-        errorOccured: `tail: illegal offset -- ${upto}`
-      };
-    }
-    filePath = userArgs[3];
-    upto = -upto;
+  const defaultOption = {
+    filePath: userArgs.slice(-1).join(""),
+    numOfLines: "-10",
+    errorOccurred: ""
+  };
+
+  userArgs.length === 2 && (defaultOption.errorOccurred = null);
+
+  if (userArgs.length === 3) {
+    defaultOption.numOfLines = userArgs[1].slice(2);
+    validOption([...userArgs]) && (defaultOption.errorOccurred = null);
   }
-  return { filePath, upto };
+
+  if (userArgs.length === 4) {
+    defaultOption.numOfLines = userArgs[2];
+    isPairValid(userArgs[1], userArgs[2]) &&
+      (defaultOption.errorOccurred = null);
+  }
+
+  if (defaultOption.errorOccurred != null)
+    defaultOption.errorOccurred = `tail: illegal offset -- ${defaultOption.numOfLines}`;
+
+  return defaultOption;
 };
 
 const readContent = function(reader, isFilePresent, filePath) {
   if (!isFilePresent(filePath))
     return {
-      errorOccured: `tail: ${filePath}: No such file or directory`
+      errorOccurred: `tail: ${filePath}: No such file or directory`
     };
   return { content: reader(filePath, "utf8") };
 };
 
-const sortContent = function(content, upto) {
+const sortContent = function(content, numOfLines) {
   return content
     .split("\n")
-    .slice(upto)
+    .slice(numOfLines)
     .join("\n");
 };
 
-const performTail = function(userArgs, fileOperation) {
+const performTail = function(userArgs, reader, isFilePresent) {
   const parsedArgs = parseUserArgs(userArgs);
 
-  if (parsedArgs.errorOccured)
-    return { displayer: "forError", content: parsedArgs.errorOccured };
-
-  const { reader, isFilePresent } = fileOperation;
+  if (parsedArgs.errorOccurred)
+    return { stream: "errorStream", content: parsedArgs.errorOccurred };
 
   const fileContent = readContent(reader, isFilePresent, parsedArgs.filePath);
 
-  if (fileContent.errorOccured)
-    return { displayer: "forError", content: fileContent.errorOccured };
+  if (fileContent.errorOccurred)
+    return { stream: "errorStream", content: fileContent.errorOccurred };
 
   return {
-    displayer: "forOutput",
-    content: sortContent(fileContent.content, parsedArgs.upto)
+    stream: "outputStream",
+    content: sortContent(fileContent.content, parsedArgs.numOfLines)
   };
 };
 
@@ -57,6 +76,5 @@ module.exports = {
   parseUserArgs,
   readContent,
   sortContent,
-  performTail,
-  getCountValue
+  performTail
 };

@@ -1,2 +1,2 @@
-node tail.js -n $ nonExistinFile
+node tail.js -n $ nonExistingFile
 tail: illegal offset -- $
