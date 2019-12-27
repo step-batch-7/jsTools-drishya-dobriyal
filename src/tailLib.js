@@ -3,7 +3,7 @@ const isInteger = function(countOption) {
 };
 
 const isPairValid = function(firstTerm, secondTerm) {
-  return firstTerm == "-n" && isInteger(secondTerm);
+  return firstTerm.includes("-n") && isInteger(secondTerm);
 };
 
 const parseUserArgs = function(userArgs) {
@@ -12,24 +12,18 @@ const parseUserArgs = function(userArgs) {
     numOfLines: "-10",
     errorOccurred: ""
   };
-
-  if (userArgs.length === 2) {
+  const [, optionFirst, optionSecond] = [...userArgs];
+  if (!optionFirst.includes("-n")) {
     defaultOption.errorOccurred = null;
     return defaultOption;
   }
 
-  defaultOption.numOfLines =
-    userArgs[1].slice(2) || userArgs[userArgs.indexOf("-n") + 1];
-
-  if (
-    isPairValid(userArgs[1].slice(0, 2), defaultOption.numOfLines) ||
-    isPairValid(userArgs[1], defaultOption.numOfLines)
-  )
+  defaultOption.numOfLines = optionFirst.slice(2) || optionSecond;
+  if (isPairValid(optionFirst, defaultOption.numOfLines)) {
     defaultOption.errorOccurred = null;
-
-  if (defaultOption.errorOccurred != null)
-    defaultOption.errorOccurred = `tail: illegal offset -- ${defaultOption.numOfLines}`;
-
+    return defaultOption;
+  }
+  defaultOption.errorOccurred = `tail: illegal offset -- ${defaultOption.numOfLines}`;
   return defaultOption;
 };
 
