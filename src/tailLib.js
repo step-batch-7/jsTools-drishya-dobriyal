@@ -6,14 +6,6 @@ const isPairValid = function(firstTerm, secondTerm) {
   return firstTerm == "-n" && isInteger(secondTerm);
 };
 
-const validOption = function(userArgs) {
-  const isFirstOptionValid = isPairValid(
-    userArgs[1].slice(0, 2),
-    userArgs[1].slice(2)
-  );
-  return isFirstOptionValid;
-};
-
 const parseUserArgs = function(userArgs) {
   const defaultOption = {
     filePath: userArgs.slice(-1).join(""),
@@ -21,18 +13,19 @@ const parseUserArgs = function(userArgs) {
     errorOccurred: ""
   };
 
-  userArgs.length === 2 && (defaultOption.errorOccurred = null);
-
-  if (userArgs.length === 3) {
-    defaultOption.numOfLines = userArgs[1].slice(2);
-    validOption([...userArgs]) && (defaultOption.errorOccurred = null);
+  if (userArgs.length === 2) {
+    defaultOption.errorOccurred = null;
+    return defaultOption;
   }
 
-  if (userArgs.length === 4) {
-    defaultOption.numOfLines = userArgs[2];
-    isPairValid(userArgs[1], userArgs[2]) &&
-      (defaultOption.errorOccurred = null);
-  }
+  defaultOption.numOfLines =
+    userArgs[1].slice(2) || userArgs[userArgs.indexOf("-n") + 1];
+
+  if (
+    isPairValid(userArgs[1].slice(0, 2), defaultOption.numOfLines) ||
+    isPairValid(userArgs[1], defaultOption.numOfLines)
+  )
+    defaultOption.errorOccurred = null;
 
   if (defaultOption.errorOccurred != null)
     defaultOption.errorOccurred = `tail: illegal offset -- ${defaultOption.numOfLines}`;
