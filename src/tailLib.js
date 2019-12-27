@@ -46,8 +46,7 @@ const parseStartingLine = function(totalLength, givenLength) {
 
   givenLength.includes("+") && (startingLine = totalLength + 1 - givenLength);
   givenLength.includes("-") && (startingLine = givenLength.slice(1));
-  if (givenLength == "+1" || givenLength == "+0")
-    startingLine = totalLength + 1;
+  if (givenLength == "+1" || givenLength == "+0") startingLine = totalLength;
   return startingLine;
 };
 
