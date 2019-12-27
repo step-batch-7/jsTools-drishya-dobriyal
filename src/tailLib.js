@@ -6,13 +6,18 @@ const isPairValid = function(firstTerm, secondTerm) {
   return firstTerm.includes("-n") && isInteger(secondTerm);
 };
 
-const parseUserArgs = function(userArgs) {
-  const defaultOption = {
+const getDefaultOption = function(userArgs) {
+  return {
     filePath: userArgs.slice(-1).join(""),
     numOfLines: "-10",
     errorOccurred: ""
   };
+};
+
+const parseUserArgs = function(userArgs) {
+  const defaultOption = getDefaultOption(userArgs);
   const [, optionFirst, optionSecond] = [...userArgs];
+
   if (!optionFirst.includes("-n")) {
     defaultOption.errorOccurred = null;
     return defaultOption;
@@ -23,6 +28,7 @@ const parseUserArgs = function(userArgs) {
     defaultOption.errorOccurred = null;
     return defaultOption;
   }
+
   defaultOption.errorOccurred = `tail: illegal offset -- ${defaultOption.numOfLines}`;
   return defaultOption;
 };
@@ -35,23 +41,29 @@ const readContent = function(reader, isFilePresent, filePath) {
   return { content: reader(filePath, "utf8") };
 };
 
+const getStartingLine = function(totalLength, givenLength) {
+  let startingLine = givenLength;
+  givenLength.includes("+") && (startingLine = totalLength - givenLength);
+  givenLength.includes("-") && (startingLine = givenLength.slice(1));
+  return startingLine;
+};
+
 const sortContent = function(content, numOfLines) {
-  return content
-    .split("\n")
-    .slice(numOfLines)
-    .join("\n");
+  const arrayOfContent = content.split("\n");
+  const startingLine = getStartingLine(arrayOfContent.length, numOfLines);
+  return arrayOfContent.slice(-startingLine).join("\n");
 };
 
 const performTail = function(userArgs, reader, isFilePresent) {
-  const parsedArgs = parseUserArgs(userArgs);
+  const errorStream = "errorStream";
 
+  const parsedArgs = parseUserArgs(userArgs);
   if (parsedArgs.errorOccurred)
-    return { stream: "errorStream", content: parsedArgs.errorOccurred };
+    return { stream: errorStream, content: parsedArgs.errorOccurred };
 
   const fileContent = readContent(reader, isFilePresent, parsedArgs.filePath);
-
   if (fileContent.errorOccurred)
-    return { stream: "errorStream", content: fileContent.errorOccurred };
+    return { stream: errorStream, content: fileContent.errorOccurred };
 
   return {
     stream: "outputStream",
