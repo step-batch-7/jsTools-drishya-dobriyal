@@ -1,22 +1,20 @@
 const { performTail } = require("./src/tailLib.js");
 
-const getStream = function(stream) {
-  const totalStreams = {
-    errorStream: console.error,
-    outputStream: console.log
-  };
-  return totalStreams[stream];
+const getOutputStream = function(outputStreamName) {
+  if (outputStreamName === "forError") return console.error;
+  return console.log;
 };
 
 const main = function() {
   const userArguments = process.argv.slice(1);
   const fs = require("fs");
-  const { stream, content } = performTail(
+  const { outputStreamName, content } = performTail(
     userArguments,
     fs.readFileSync,
     fs.existsSync
   );
-  getStream(stream)(content);
+  outputStream = getOutputStream(outputStreamName);
+  outputStream(content);
 };
 
 main();

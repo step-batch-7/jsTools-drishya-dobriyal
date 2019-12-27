@@ -15,22 +15,22 @@ const getDefaultOption = function(userArgs) {
 };
 
 const parseUserArgs = function(userArgs) {
-  const defaultOption = getDefaultOption(userArgs);
+  const currentOption = getDefaultOption(userArgs);
   const [, optionFirst, optionSecond] = [...userArgs];
 
   if (!optionFirst.includes("-n")) {
-    defaultOption.errorOccurred = null;
-    return defaultOption;
+    currentOption.errorOccurred = null;
+    return currentOption;
   }
 
-  defaultOption.numOfLines = optionFirst.slice(2) || optionSecond;
-  if (isPairValid(optionFirst, defaultOption.numOfLines)) {
-    defaultOption.errorOccurred = null;
-    return defaultOption;
+  currentOption.numOfLines = optionFirst.slice(2) || optionSecond;
+  if (isPairValid(optionFirst, currentOption.numOfLines)) {
+    currentOption.errorOccurred = null;
+    return currentOption;
   }
 
-  defaultOption.errorOccurred = `tail: illegal offset -- ${defaultOption.numOfLines}`;
-  return defaultOption;
+  currentOption.errorOccurred = `tail: illegal offset -- ${currentOption.numOfLines}`;
+  return currentOption;
 };
 
 const readContent = function(reader, isFilePresent, filePath) {
@@ -41,16 +41,17 @@ const readContent = function(reader, isFilePresent, filePath) {
   return { content: reader(filePath, "utf8") };
 };
 
-const getStartingLine = function(totalLength, givenLength) {
+const parseStartingLine = function(totalLength, givenLength) {
   let startingLine = givenLength;
   givenLength.includes("+") && (startingLine = totalLength - givenLength);
   givenLength.includes("-") && (startingLine = givenLength.slice(1));
+  (givenLength == "+1" || givenLength == 0) && (startingLine = totalLength);
   return startingLine;
 };
 
 const sortContent = function(content, numOfLines) {
   const arrayOfContent = content.split("\n");
-  const startingLine = getStartingLine(arrayOfContent.length, numOfLines);
+  const startingLine = parseStartingLine(arrayOfContent.length, numOfLines);
   return arrayOfContent.slice(-startingLine).join("\n");
 };
 
@@ -59,14 +60,17 @@ const performTail = function(userArgs, reader, isFilePresent) {
 
   const parsedArgs = parseUserArgs(userArgs);
   if (parsedArgs.errorOccurred)
-    return { stream: errorStream, content: parsedArgs.errorOccurred };
+    return { outputStreamName: errorStream, content: parsedArgs.errorOccurred };
 
   const fileContent = readContent(reader, isFilePresent, parsedArgs.filePath);
   if (fileContent.errorOccurred)
-    return { stream: errorStream, content: fileContent.errorOccurred };
+    return {
+      outputStreamName: errorStream,
+      content: fileContent.errorOccurred
+    };
 
   return {
-    stream: "outputStream",
+    outputStreamName: "outputStream",
     content: sortContent(fileContent.content, parsedArgs.numOfLines)
   };
 };

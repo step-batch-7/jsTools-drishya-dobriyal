@@ -139,6 +139,14 @@ describe("tail", function() {
         "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20";
       assert.strictEqual(sortContent(content, "5"), "16\n17\n18\n19\n20");
     });
+    it("should give whole file for +1 as numOfLines", function() {
+      const content =
+        "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20";
+      assert.strictEqual(
+        sortContent(content, "+1"),
+        "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20"
+      );
+    });
   });
 
   describe("performTail", function() {
@@ -155,7 +163,7 @@ describe("tail", function() {
       const actualValue = performTail(userArguments, reader, isFilePresent);
       assert.deepStrictEqual(actualValue, {
         content: "11\n12\n13\n14\n15\n16\n17\n18\n19\n20",
-        stream: "outputStream"
+        outputStreamName: "outputStream"
       });
     });
     it("should give illegal count error if -n does not have num after it", function() {
@@ -169,7 +177,7 @@ describe("tail", function() {
         performTail(userArguments, reader, isFilePresent),
         {
           content: `tail: illegal offset -- -$`,
-          stream: "errorStream"
+          outputStreamName: "errorStream"
         }
       );
     });
@@ -186,7 +194,7 @@ describe("tail", function() {
         performTail(userArguments, reader, isFilePresent),
         {
           content: `tail: nonExistingFilePath: No such file or directory`,
-          stream: "errorStream"
+          outputStreamName: "errorStream"
         }
       );
     });
