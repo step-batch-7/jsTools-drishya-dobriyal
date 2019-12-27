@@ -1,7 +1,7 @@
 const { performTail } = require("./src/tailLib.js");
 
 const getOutputStream = function(outputStreamName) {
-  if (outputStreamName === "forError") return console.error;
+  if (outputStreamName === "errorStream") return console.error;
   return console.log;
 };
 

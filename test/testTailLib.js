@@ -139,14 +139,6 @@ describe("tail", function() {
         "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20";
       assert.strictEqual(sortContent(content, "5"), "16\n17\n18\n19\n20");
     });
-    it("should give whole file for +1 as numOfLines", function() {
-      const content =
-        "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20";
-      assert.strictEqual(
-        sortContent(content, "+1"),
-        "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20"
-      );
-    });
   });
 
   describe("performTail", function() {
