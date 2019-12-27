@@ -43,9 +43,11 @@ const readContent = function(reader, isFilePresent, filePath) {
 
 const parseStartingLine = function(totalLength, givenLength) {
   let startingLine = givenLength;
-  givenLength.includes("+") && (startingLine = totalLength - givenLength);
+
+  givenLength.includes("+") && (startingLine = totalLength + 1 - givenLength);
   givenLength.includes("-") && (startingLine = givenLength.slice(1));
-  (givenLength == "+1" || givenLength == "+0") && (startingLine = totalLength);
+  if (givenLength == "+1" || givenLength == "+0")
+    startingLine = totalLength + 1;
   return startingLine;
 };
 

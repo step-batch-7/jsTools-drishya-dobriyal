@@ -131,13 +131,29 @@ describe("tail", function() {
         "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20";
       assert.strictEqual(
         sortContent(content, "+5"),
-        "6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20"
+        "5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20"
       );
     });
     it("should give sorted line if num is given without prefix such that it works similar with - prefix", function() {
       const content =
         "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20";
       assert.strictEqual(sortContent(content, "5"), "16\n17\n18\n19\n20");
+    });
+    it("should give whole file for +1 ", function() {
+      const content =
+        "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20";
+      assert.strictEqual(
+        sortContent(content, "+1"),
+        "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20"
+      );
+    });
+    it("should give whole file for 0 ", function() {
+      const content =
+        "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20";
+      assert.strictEqual(
+        sortContent(content, "0"),
+        "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20"
+      );
     });
   });
 
