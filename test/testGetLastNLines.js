@@ -1,5 +1,6 @@
-const { getLastNLines } = require('../src/getLastNLines.js');
 const assert = require('chai').assert;
+
+const { getLastNLines } = require('../src/getLastNLines.js');
 
 describe('getLastNLines', function() {
   it('should give last 10 line of file of more than 10 lines with - and num  ', function() {

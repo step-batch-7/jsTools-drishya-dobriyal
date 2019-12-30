@@ -2,28 +2,28 @@ const { parseUserArgs } = require('./parseUserArgs.js');
 const { getLastNLines } = require('./getLastNLines.js');
 const emptyString = '';
 
-const contentFromReadFile = function(error, content) {
+const contentFromReadFile = function(
+  error,
+  content,
+  { onCompletion, parsedArgs }
+) {
   if (error) {
-    return this.displayTailOutput(
-      `tail: ${this.parsedArgs.filePath}: No such file or directory`,
+    onCompletion(
+      `tail: ${parsedArgs.filePath}: No such file or directory`,
       emptyString
     );
+    return;
   }
-  return this.displayTailOutput(
-    emptyString,
-    getLastNLines(content, this.parsedArgs.numOfLines)
-  );
+  onCompletion(emptyString, getLastNLines(content, parsedArgs.numOfLines));
 };
 
-const performTail = function(userArgs, fs, displayTailOutput) {
+const performTail = function(userArgs, reader, onCompletion) {
   const parsedArgs = parseUserArgs(userArgs);
   if (parsedArgs.errorOccurred) {
-    return displayTailOutput(parsedArgs.errorOccurred, emptyString);
+    return onCompletion(parsedArgs.errorOccurred, emptyString);
   }
-  fs.readFile(
-    parsedArgs.filePath,
-    'utf8',
-    contentFromReadFile.bind({ displayTailOutput, parsedArgs })
+  reader(parsedArgs.filePath, 'utf8', (error, content) =>
+    contentFromReadFile(error, content, { onCompletion, parsedArgs })
   );
 };
 

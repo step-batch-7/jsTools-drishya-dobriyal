@@ -6,10 +6,16 @@ const isPairValid = function(firstTerm, secondTerm) {
   return firstTerm.includes('-n') && isInteger(secondTerm);
 };
 
+const isValidFilePath = function(option) {
+  return !(option.includes('-n') || isInteger(+option));
+};
+
 const getDefaultOption = function(userArgs) {
-  const lastArgsFinder = -1;
+  const fileList = userArgs.filter(isValidFilePath);
+  const firstFileIndex = 0;
+  const filePath = fileList[firstFileIndex];
   return {
-    filePath: userArgs.slice(lastArgsFinder).join(''),
+    filePath,
     numOfLines: '-10',
     errorOccurred: null
   };

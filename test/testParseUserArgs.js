@@ -1,4 +1,5 @@
 const assert = require('chai').assert;
+
 const { parseUserArgs } = require('../src/parseUserArgs.js');
 
 describe('parseUserArgs', function() {
@@ -46,7 +47,7 @@ describe('parseUserArgs', function() {
     const userArguments = ['-n', '-$', 'filePath'];
     const actualValue = parseUserArgs(userArguments);
     const expectedValue = {
-      filePath: 'filePath',
+      filePath: '-$',
       numOfLines: '-$',
       errorOccurred: 'tail: illegal offset -- -$'
     };

@@ -1,0 +1,54 @@
+v 0.1 
+file name : tail.js
+
+Expected Feature:
+node tail.js "fileName" // display the last 10 lines of the file specified
+
+steps :
+  
+  done = init npm
+  
+  done = make file : tail.js
+  done = make directory : src and test
+  
+  done = dev dependencies 
+          mocha 
+          chai
+  
+  tasks : 
+
+ # =>  for existing file 
+    done = parseUserArguments
+    done = readContentOfFile
+    done = select 10 lines from file
+    done = display the content 
+     
+    done =  create an app test
+  
+  done = check the Links connection 
+     commandLineArguments => parseUserArguments => readContentOfFile => select 10 lines from file => display the content 
+
+
+# done => for non exiting  file 
+     readContentOfFile
+     display the error 
+     
+     create an app test
+  
+ check the Links connection 
+     commandLineArguments => parseUserArguments => readContentOfFile => select 10 lines from file => display the content 
+  
+# v 0.2
+file name : tail.js
+
+Expected Feature:
+node tail.js -n -3 "fileName" // display the last 10 lines of the file specified
+node tail.js -n 3 "fileName" // display the last 10 lines of the file specified
+node tail.js -n -$ "fileName // error
+node tail.js -n --$ "fileName // error
+node tail.js -n2 fileName
+
+tasks parseUserArguments (add feature for num of lines)
+sortContent (according to given num of lines)
+create app test 
+
