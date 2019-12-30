@@ -2,7 +2,7 @@ const assert = require('chai').assert;
 const { parseUserArgs } = require('../src/parseUserArgs.js');
 
 describe('parseUserArgs', function() {
-  it('should give filePath stated and default value if -n is not specified ', function() {
+  it('should give filePath stated and default value if -n is not specified ', () => {
     const userArguments = ['tail.js', 'filePath'];
     const actualValue = parseUserArgs(userArguments);
     const expectedValue = {
@@ -12,7 +12,7 @@ describe('parseUserArgs', function() {
     };
     assert.deepStrictEqual(actualValue, expectedValue);
   });
-  it('should give filePath and num of lines as stated if - does not follow number ', function() {
+  it('should give filePath and num of lines as stated if - does not follow number ', () => {
     const userArguments = ['tail.js', '-n', '3', 'filePath'];
     const actualValue = parseUserArgs(userArguments);
     const expectedValue = {
@@ -22,7 +22,7 @@ describe('parseUserArgs', function() {
     };
     assert.deepStrictEqual(actualValue, expectedValue);
   });
-  it('should give filePath and num of lines as stated and - is there with number', function() {
+  it('should give filePath and num of lines as stated and - is there with number', () => {
     const userArguments = ['tail.js', '-n', '-3', 'filePath'];
     const actualValue = parseUserArgs(userArguments);
     const expectedValue = {
@@ -32,7 +32,7 @@ describe('parseUserArgs', function() {
     };
     assert.deepStrictEqual(actualValue, expectedValue);
   });
-  it('should give filePath and num of lines as stated and + is there with number', function() {
+  it('should give filePath and num of lines as stated and + is there with number', () => {
     const userArguments = ['tail.js', '-n', '+3', 'filePath'];
     const actualValue = parseUserArgs(userArguments);
     const expectedValue = {
@@ -42,7 +42,7 @@ describe('parseUserArgs', function() {
     };
     assert.deepStrictEqual(actualValue, expectedValue);
   });
-  it('should give illegal offset if userArguments after -n is not a number', function() {
+  it('should give illegal offset if userArguments after -n is not a number', () => {
     const userArguments = ['tail.js', '-n', '-$', 'filePath'];
     const actualValue = parseUserArgs(userArguments);
     const expectedValue = {
@@ -52,7 +52,7 @@ describe('parseUserArgs', function() {
     };
     assert.deepStrictEqual(actualValue, expectedValue);
   });
-  it('should give line count as joined with -n option', function() {
+  it('should give line count as joined with -n option', () => {
     const userArguments = ['tail.js', '-n2', 'filePath'];
     const actualValue = parseUserArgs(userArguments);
     const expectedValue = {
@@ -62,7 +62,7 @@ describe('parseUserArgs', function() {
     };
     assert.deepStrictEqual(actualValue, expectedValue);
   });
-  it('should give illegal if  count as joined with -n option is not an integer', function() {
+  it('should give illegal if  count as joined with -n option is not an integer', () => {
     const userArguments = ['tail.js', '-na', 'filePath'];
     const actualValue = parseUserArgs(userArguments);
     const expectedValue = {

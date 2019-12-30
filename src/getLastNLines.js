@@ -7,16 +7,16 @@ const getStartingLineWithPlus = function(totalLength, givenLength) {
 };
 
 const parseStartingLine = function(totalLength, givenLength) {
-  let startingLine = givenLength;
+  let startingLineFromEnd = givenLength;
 
   if (givenLength.includes('+')) {
-    startingLine = getStartingLineWithPlus(totalLength, givenLength);
+    startingLineFromEnd = getStartingLineWithPlus(totalLength, givenLength);
   }
   if (givenLength.includes('-')) {
-    startingLine = -givenLength;
+    startingLineFromEnd = -givenLength;
   }
 
-  return startingLine;
+  return startingLineFromEnd;
 };
 
 const getLastNLines = function(content, numOfLines) {

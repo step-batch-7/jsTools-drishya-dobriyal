@@ -4,6 +4,14 @@ const sinon = require('sinon');
 const fs = require('fs');
 
 describe('performTail', function() {
+  it('should give illegal count error if -n does not have num after it', () => {
+    const userArguments = ['tail.js', '-n', '-$', 'filePath'];
+    const displayTailOutput = function(error, content) {
+      assert.strictEqual(error, 'tail: illegal offset -- -$');
+      assert.strictEqual(content, '');
+    };
+    performTail(userArguments, fs, displayTailOutput);
+  });
   it('should give last 10 lines of a file that exist ', function() {
     const fakeReadFile = sinon.fake.yields(
       null,
@@ -17,14 +25,6 @@ describe('performTail', function() {
     };
     performTail(userArguments, fs, displayTailOutput);
     sinon.restore();
-  });
-  it('should give illegal count error if -n does not have num after it', () => {
-    const userArguments = ['tail.js', '-n', '-$', 'filePath'];
-    const displayTailOutput = function(error, content) {
-      assert.strictEqual(error, 'tail: illegal offset -- -$');
-      assert.strictEqual(content, '');
-    };
-    performTail(userArguments, fs, displayTailOutput);
   });
   it('should give no such directory error if file does not exist ', function() {
     const userArguments = ['tail.js', '-n', '-4', 'nonExistingFilePath'];
