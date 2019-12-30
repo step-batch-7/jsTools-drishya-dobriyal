@@ -2,7 +2,7 @@ const { parseUserArgs } = require('./parseUserArgs.js');
 const { getLastNLines } = require('./getLastNLines.js');
 const emptyString = '';
 
-const callbackReadFile = function(error, content) {
+const contentFromReadFile = function(error, content) {
   if (error) {
     return this.displayTailOutput(
       `tail: ${this.parsedArgs.filePath}: No such file or directory`,
@@ -23,7 +23,7 @@ const performTail = function(userArgs, fs, displayTailOutput) {
   fs.readFile(
     parsedArgs.filePath,
     'utf8',
-    callbackReadFile.bind({ displayTailOutput, parsedArgs })
+    contentFromReadFile.bind({ displayTailOutput, parsedArgs })
   );
 };
 

@@ -7,7 +7,7 @@ const displayTailOutput = function(error, content) {
 };
 
 const main = function() {
-  const [, ...userArguments] = [...process.argv];
+  const [, , ...userArguments] = [...process.argv];
   performTail(userArguments, fs, displayTailOutput);
 };
 

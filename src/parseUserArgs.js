@@ -21,14 +21,14 @@ const stringifyErrorOffset = function(illegalOffset) {
 
 const parseUserArgs = function(userArgs) {
   const currentOption = getDefaultOption(userArgs);
-  const [, optionFirst, optionSecond] = [...userArgs];
+  const [optionFirst, optionSecond] = [...userArgs];
 
   if (!optionFirst.includes('-n')) {
     return currentOption;
   }
 
-  const separateNumber = 2;
-  currentOption.numOfLines = optionFirst.slice(separateNumber) || optionSecond;
+  const separateOffset = 2;
+  currentOption.numOfLines = optionFirst.slice(separateOffset) || optionSecond;
   if (isPairValid(optionFirst, currentOption.numOfLines)) {
     return currentOption;
   }
