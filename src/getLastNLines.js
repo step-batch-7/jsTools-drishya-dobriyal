@@ -19,10 +19,13 @@ const parseStartingLine = function(totalLength, givenLength) {
   return startingLine;
 };
 
-const sortContent = function(content, numOfLines) {
+const getLastNLines = function(content, numOfLines) {
   const arrayOfContent = content.split('\n');
-  const startingLine = parseStartingLine(arrayOfContent.length, numOfLines);
-  return arrayOfContent.slice(-startingLine).join('\n');
+  const numOfLinesFromEnd = parseStartingLine(
+    arrayOfContent.length,
+    numOfLines
+  );
+  return arrayOfContent.slice(-numOfLinesFromEnd).join('\n');
 };
 
-module.exports = { sortContent };
+module.exports = { getLastNLines };

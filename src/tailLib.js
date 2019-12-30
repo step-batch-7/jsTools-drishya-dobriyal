@@ -1,24 +1,24 @@
 const { parseUserArgs } = require('./parseUserArgs.js');
-const { sortContent } = require('./sortContent.js');
-const fs = require('fs');
+const { getLastNLines } = require('./getLastNLines.js');
+const emptyString = '';
 
 const callbackReadFile = function(error, content) {
   if (error) {
     return this.displayTailOutput(
       `tail: ${this.parsedArgs.filePath}: No such file or directory`,
-      ''
+      emptyString
     );
   }
   return this.displayTailOutput(
-    '',
-    sortContent(content, this.parsedArgs.numOfLines)
+    emptyString,
+    getLastNLines(content, this.parsedArgs.numOfLines)
   );
 };
 
-const performTail = function(userArgs, displayTailOutput) {
+const performTail = function(userArgs, fs, displayTailOutput) {
   const parsedArgs = parseUserArgs(userArgs);
   if (parsedArgs.errorOccurred) {
-    return displayTailOutput(parsedArgs.errorOccurred, '');
+    return displayTailOutput(parsedArgs.errorOccurred, emptyString);
   }
   fs.readFile(
     parsedArgs.filePath,
@@ -28,6 +28,5 @@ const performTail = function(userArgs, displayTailOutput) {
 };
 
 module.exports = {
-  sortContent,
   performTail
 };

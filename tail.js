@@ -1,4 +1,5 @@
 const { performTail } = require('./src/tailLib.js');
+const fs = require('fs');
 
 const displayTailOutput = function(error, content) {
   process.stderr.write(error);
@@ -6,9 +7,8 @@ const displayTailOutput = function(error, content) {
 };
 
 const main = function() {
-  const separatedRequiredArgs = 1;
-  const userArguments = process.argv.slice(separatedRequiredArgs);
-  performTail(userArguments, displayTailOutput);
+  const [, ...userArguments] = [...process.argv];
+  performTail(userArguments, fs, displayTailOutput);
 };
 
 main();
