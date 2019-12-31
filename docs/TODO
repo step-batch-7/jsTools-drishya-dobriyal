@@ -52,3 +52,13 @@ tasks parseUserArguments (add feature for num of lines)
 sortContent (according to given num of lines)
 create app test 
 
+v 1.0 
+
+Expected Feature : 
+node tail.js
+
+tasks :
+parseUserArguments ( filePath undefined if not specified)
+divide stdin for undefined file
+take data from stdin if fileNotPresent 
+get last lines as asked from the parsed option
