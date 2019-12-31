@@ -6,21 +6,20 @@ const { performTail } = require('../src/tailLib.js');
 describe('performTail', function() {
   it('should give last 10 lines of a file that exist ', done => {
     const userArguments = ['filePath'];
-    const reader = sinon.fake();
+    const fakeReader = sinon.fake.yieldsAsync(null, 'fileContent');
     const onCompletion = (error, content) => {
       assert.strictEqual(error, '');
       assert.strictEqual(content, 'fileContent');
       done();
     };
-    performTail(userArguments, reader, onCompletion);
-    assert.equal(reader.firstCall.args[0], 'filePath');
-    assert.equal(reader.firstCall.args[1], 'utf8');
-    reader.firstCall.args[2](null, 'fileContent');
+    performTail(userArguments, fakeReader, onCompletion);
+    assert.equal(fakeReader.firstCall.args[0], 'filePath');
+    assert.equal(fakeReader.firstCall.args[1], 'utf8');
     sinon.restore();
   });
   it('should give no such directory error if file does not exist ', done => {
     const userArguments = ['nonExistingFilePath'];
-    const reader = sinon.fake();
+    const fakeReader = sinon.fake.yieldsAsync('error', '');
     const onCompletion = (error, content) => {
       assert.strictEqual(
         error,
@@ -29,11 +28,9 @@ describe('performTail', function() {
       assert.strictEqual(content, '');
       done();
     };
-    performTail(userArguments, reader, onCompletion);
-    assert.equal(reader.firstCall.args[0], 'nonExistingFilePath');
-    assert.equal(reader.firstCall.args[1], 'utf8');
-    reader.firstCall.args[2]('error', undefined);
-    sinon.restore();
+    performTail(userArguments, fakeReader, onCompletion);
+    assert.equal(fakeReader.firstCall.args[0], 'nonExistingFilePath');
+    assert.equal(fakeReader.firstCall.args[1], 'utf8');
   });
   it('should give illegal count error if -n does not have num after it', done => {
     const userArguments = ['-n', '-$', 'filePath'];
