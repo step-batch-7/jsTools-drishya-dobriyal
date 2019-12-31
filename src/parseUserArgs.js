@@ -25,16 +25,19 @@ const stringifyErrorOffset = function(illegalOffset) {
   return `tail: illegal offset -- ${illegalOffset}`;
 };
 
+const getUserCount = function(optionFirst, optionSecond) {
+  const separateOffset = 2;
+  return optionFirst.slice(separateOffset) || optionSecond;
+};
+
 const parseUserArgs = function(userArgs) {
   const currentOption = getDefaultOption(userArgs);
   const [optionFirst, optionSecond] = [...userArgs];
-
-  if (!optionFirst.includes('-n')) {
+  if (userArgs.length === 0 || !optionFirst.includes('-n')) {
     return currentOption;
   }
 
-  const separateOffset = 2;
-  currentOption.numOfLines = optionFirst.slice(separateOffset) || optionSecond;
+  currentOption.numOfLines = getUserCount(optionFirst, optionSecond);
   if (isPairValid(optionFirst, currentOption.numOfLines)) {
     return currentOption;
   }

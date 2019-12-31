@@ -1,4 +1,5 @@
-const fs = require('fs');
+const { readFile } = require('fs');
+const { stdin } = require('process');
 
 const { performTail } = require('./src/tailLib.js');
 
@@ -9,7 +10,7 @@ const displayTailOutput = function(error, content) {
 
 const main = function() {
   const [, , ...userArguments] = [...process.argv];
-  performTail(userArguments, fs.readFile, displayTailOutput);
+  performTail(userArguments, readFile, stdin, displayTailOutput);
 };
 
 main();

@@ -12,7 +12,7 @@ describe('performTail', function() {
       assert.strictEqual(content, 'fileContent');
       done();
     };
-    performTail(userArguments, fakeReader, onCompletion);
+    performTail(userArguments, fakeReader, null, onCompletion);
     assert.equal(fakeReader.firstCall.args[0], 'filePath');
     assert.equal(fakeReader.firstCall.args[1], 'utf8');
     sinon.restore();
@@ -28,7 +28,7 @@ describe('performTail', function() {
       assert.strictEqual(content, '');
       done();
     };
-    performTail(userArguments, fakeReader, onCompletion);
+    performTail(userArguments, fakeReader, null, onCompletion);
     assert.equal(fakeReader.firstCall.args[0], 'nonExistingFilePath');
     assert.equal(fakeReader.firstCall.args[1], 'utf8');
     sinon.restore();
@@ -41,7 +41,7 @@ describe('performTail', function() {
       assert.strictEqual(content, '');
       done();
     };
-    performTail(userArguments, reader, onCompletion);
+    performTail(userArguments, reader, null, onCompletion);
   });
   it('should give the asked num of lines from end of a file that exist ', done => {
     const userArguments = ['-n', '-4', 'filePath'];
@@ -54,7 +54,7 @@ describe('performTail', function() {
       assert.strictEqual(content, '7\n8\n9\n10');
       done();
     };
-    performTail(userArguments, reader, onCompletion);
+    performTail(userArguments, reader, null, onCompletion);
     assert.equal(reader.firstCall.args[0], 'filePath');
     assert.equal(reader.firstCall.args[1], 'utf8');
     sinon.restore();
@@ -70,9 +70,49 @@ describe('performTail', function() {
       assert.strictEqual(content, '');
       done();
     };
-    performTail(userArguments, reader, onCompletion);
+    performTail(userArguments, reader, null, onCompletion);
     assert.equal(reader.firstCall.args[0], 'nonExistingFilePath');
     assert.equal(reader.firstCall.args[1], 'utf8');
+    sinon.restore();
+  });
+  it('should give default(last 10 lines) from the standard input', done => {
+    const stdin = {
+      setEncoding: sinon.fake(),
+      on: sinon.fake.yieldsAsync(
+        '1\n2\n3\n4\n5\n6\n7\n8\n9\n1\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10'
+      )
+    };
+    const userArguments = [];
+    const onCompletion = (error, content) => {
+      assert.strictEqual(error, '');
+      assert.strictEqual(content, '1\n2\n3\n4\n5\n6\n7\n8\n9\n10');
+      done();
+    };
+    performTail(userArguments, null, stdin, onCompletion);
+    assert.ok(stdin.setEncoding.calledWith('utf8'));
+    assert.strictEqual(stdin.on.firstCall.args[0], 'data');
+    assert.strictEqual(stdin.on.secondCall.args[0], 'end');
+    assert.strictEqual(stdin.on.callCount, 2);
+    sinon.restore();
+  });
+  it('should give specified num of lines from last the standard input', done => {
+    const stdin = {
+      on: sinon.fake.yieldsAsync(
+        '1\n2\n3\n4\n5\n6\n7\n8\n9\n1\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n'
+      ),
+      setEncoding: sinon.fake()
+    };
+    const userArguments = ['-n', '-5'];
+    const onCompletion = (error, content) => {
+      assert.strictEqual(error, '');
+      assert.strictEqual(content, '6\n7\n8\n9\n10');
+      done();
+    };
+    performTail(userArguments, null, stdin, onCompletion);
+    assert.ok(stdin.setEncoding.calledWith('utf8'));
+    assert.strictEqual(stdin.on.firstCall.args[0], 'data');
+    assert.strictEqual(stdin.on.secondCall.args[0], 'end');
+    assert.strictEqual(stdin.on.callCount, 2);
     sinon.restore();
   });
 });
