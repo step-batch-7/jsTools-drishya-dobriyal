@@ -1,7 +1,7 @@
 const assert = require('chai').assert;
 const sinon = require('sinon');
 
-const { performTail, contentFromReadFile } = require('../src/tailLib.js');
+const { performTail } = require('../src/tailLib.js');
 
 describe('performTail', function() {
   it('should give last 10 lines of a file that exist ', done => {
@@ -46,17 +46,17 @@ describe('performTail', function() {
     performTail(userArguments, reader, onCompletion);
   });
   it('should give the asked num of lines from end of a file that exist ', done => {
-    const userArguments = ['-n', '-2', 'filePath'];
+    const userArguments = ['-n', '-4', 'filePath'];
     const reader = sinon.fake();
     const onCompletion = (error, content) => {
       assert.strictEqual(error, '');
-      assert.strictEqual(content, '9\n10');
+      assert.strictEqual(content, '7\n8\n9\n10');
       done();
     };
     performTail(userArguments, reader, onCompletion);
     assert.equal(reader.firstCall.args[0], 'filePath');
     assert.equal(reader.firstCall.args[1], 'utf8');
-    reader.firstCall.args[2](null, '1\n2\n3\n4\n5\n6\n7\n8\n9\n10');
+    reader.firstCall.args[2](null, '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n');
     sinon.restore();
   });
   it('give error if file does not exist with num of lines stated in cmd line args', done => {
