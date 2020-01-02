@@ -13,7 +13,7 @@ const readFromStdin = function(stdin, numOfLines, onCompletion) {
   });
 };
 
-const performTail = function(userArgs, readFile, stdin, onCompletion) {
+const performTail = function(userArgs, { readFile, stdin }, onCompletion) {
   const { filePath, numOfLines, errorOccurred } = parseUserArgs([...userArgs]);
   if (errorOccurred) {
     return onCompletion(errorOccurred, emptyString);
@@ -27,11 +27,11 @@ const performTail = function(userArgs, readFile, stdin, onCompletion) {
     onCompletion(emptyString, getLastNLines(content, numOfLines));
   };
 
-  const readerStream = filePath
+  const reader = filePath
     ? () => readFile(filePath, 'utf8', contentFromReadFile)
     : () => readFromStdin(stdin, numOfLines, onCompletion);
 
-  readerStream();
+  reader();
 };
 
 module.exports = {

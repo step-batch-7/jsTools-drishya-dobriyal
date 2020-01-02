@@ -2,8 +2,8 @@ const assert = require('chai').assert;
 
 const { getLastNLines } = require('../src/getLastNLines.js');
 
-describe('getLastNLines', function() {
-  it('should give last 10 line of file of more than 10 lines with - and num  ', function() {
+describe('getLastNLines', () => {
+  it('give sorted line if num is given with - prefix', () => {
     const content =
       '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n';
     assert.strictEqual(
@@ -11,11 +11,11 @@ describe('getLastNLines', function() {
       '11\n12\n13\n14\n15\n16\n17\n18\n19\n20'
     );
   });
-  it('should give the total line of file if the content of file is less than the line num from which the sorting should be started  with - and num  ', function() {
+  it('give whole file for file less than asked num of line', () => {
     const content = '1\n2\n3\n4\n5\n6\n';
     assert.strictEqual(getLastNLines(content, '-10'), '1\n2\n3\n4\n5\n6');
   });
-  it('should give sorted line if +num is given such that lines start from num ', function() {
+  it('should give sorted line if num is given with + prefix', () => {
     const content =
       '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20';
     assert.strictEqual(
@@ -23,12 +23,12 @@ describe('getLastNLines', function() {
       '5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20'
     );
   });
-  it('should give sorted line if num is given without prefix such that it works similar with - prefix', function() {
+  it('should give sorted line if num is given without prefix', () => {
     const content =
       '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n';
     assert.strictEqual(getLastNLines(content, '5'), '16\n17\n18\n19\n20');
   });
-  it('should give whole file for +1 ', function() {
+  it('should give whole file for +1 ', () => {
     const content =
       '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20';
     assert.strictEqual(
@@ -36,7 +36,7 @@ describe('getLastNLines', function() {
       '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20'
     );
   });
-  it('should give whole file for 0 ', function() {
+  it('should give whole file for 0 ', () => {
     const content =
       '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20';
     assert.strictEqual(

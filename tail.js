@@ -10,7 +10,7 @@ const displayTailOutput = function(error, content) {
 
 const main = function() {
   const [, , ...userArguments] = [...process.argv];
-  performTail(userArguments, readFile, stdin, displayTailOutput);
+  performTail(userArguments, { readFile, stdin }, displayTailOutput);
 };
 
 main();

@@ -4,22 +4,25 @@ const sinon = require('sinon');
 const { performTail } = require('../src/tailLib.js');
 
 describe('performTail', function() {
-  it('should give last 10 lines of a file that exist ', done => {
+  const zero = 0;
+  const one = 1;
+  const two = 2;
+  it('give last 10 lines of a file that exist ', done => {
     const userArguments = ['filePath'];
-    const fakeReader = sinon.fake.yieldsAsync(null, 'fileContent');
+    const readFile = sinon.fake.yieldsAsync(null, 'fileContent');
     const onCompletion = (error, content) => {
       assert.strictEqual(error, '');
       assert.strictEqual(content, 'fileContent');
       done();
     };
-    performTail(userArguments, fakeReader, null, onCompletion);
-    assert.equal(fakeReader.firstCall.args[0], 'filePath');
-    assert.equal(fakeReader.firstCall.args[1], 'utf8');
+    performTail(userArguments, { readFile }, onCompletion);
+    assert.equal(readFile.firstCall.args[zero], 'filePath');
+    assert.equal(readFile.firstCall.args[one], 'utf8');
     sinon.restore();
   });
-  it('should give no such directory error if file does not exist ', done => {
+  it('give no such directory error if file does not exist ', done => {
     const userArguments = ['nonExistingFilePath'];
-    const fakeReader = sinon.fake.yieldsAsync('error', '');
+    const readFile = sinon.fake.yieldsAsync('error', '');
     const onCompletion = (error, content) => {
       assert.strictEqual(
         error,
@@ -28,24 +31,24 @@ describe('performTail', function() {
       assert.strictEqual(content, '');
       done();
     };
-    performTail(userArguments, fakeReader, null, onCompletion);
-    assert.equal(fakeReader.firstCall.args[0], 'nonExistingFilePath');
-    assert.equal(fakeReader.firstCall.args[1], 'utf8');
+    performTail(userArguments, { readFile }, onCompletion);
+    assert.equal(readFile.firstCall.args[zero], 'nonExistingFilePath');
+    assert.equal(readFile.firstCall.args[one], 'utf8');
     sinon.restore();
   });
-  it('should give illegal count error if -n does not have num after it', done => {
+  it('give illegal count error if -n does not have num after it', done => {
     const userArguments = ['-n', '-$', 'filePath'];
-    const reader = () => {};
+    const readFile = () => {};
     const onCompletion = function(error, content) {
       assert.strictEqual(error, 'tail: illegal offset -- -$');
       assert.strictEqual(content, '');
       done();
     };
-    performTail(userArguments, reader, null, onCompletion);
+    performTail(userArguments, { readFile }, onCompletion);
   });
-  it('should give the asked num of lines from end of a file that exist ', done => {
+  it('give the asked num of lines from end of a file that exist ', done => {
     const userArguments = ['-n', '-4', 'filePath'];
-    const reader = sinon.fake.yieldsAsync(
+    const readFile = sinon.fake.yieldsAsync(
       null,
       '1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n'
     );
@@ -54,14 +57,14 @@ describe('performTail', function() {
       assert.strictEqual(content, '7\n8\n9\n10');
       done();
     };
-    performTail(userArguments, reader, null, onCompletion);
-    assert.equal(reader.firstCall.args[0], 'filePath');
-    assert.equal(reader.firstCall.args[1], 'utf8');
+    performTail(userArguments, { readFile }, onCompletion);
+    assert.equal(readFile.firstCall.args[zero], 'filePath');
+    assert.equal(readFile.firstCall.args[one], 'utf8');
     sinon.restore();
   });
-  it('give error if file does not exist with num of lines stated in cmd line args', done => {
+  it('give error if file does not exist ( num of lines provided)', done => {
     const userArguments = ['-n', '-5', 'nonExistingFilePath'];
-    const reader = sinon.fake.yieldsAsync('error', undefined);
+    const readFile = sinon.fake.yieldsAsync('error', undefined);
     const onCompletion = (error, content) => {
       assert.strictEqual(
         error,
@@ -70,12 +73,12 @@ describe('performTail', function() {
       assert.strictEqual(content, '');
       done();
     };
-    performTail(userArguments, reader, null, onCompletion);
-    assert.equal(reader.firstCall.args[0], 'nonExistingFilePath');
-    assert.equal(reader.firstCall.args[1], 'utf8');
+    performTail(userArguments, { readFile }, onCompletion);
+    assert.equal(readFile.firstCall.args[zero], 'nonExistingFilePath');
+    assert.equal(readFile.firstCall.args[one], 'utf8');
     sinon.restore();
   });
-  it('should give default(last 10 lines) from the standard input', done => {
+  it('give default(last 10 lines) from the standard input', done => {
     const stdin = {
       setEncoding: sinon.fake(),
       on: sinon.fake.yieldsAsync(
@@ -88,14 +91,14 @@ describe('performTail', function() {
       assert.strictEqual(content, '1\n2\n3\n4\n5\n6\n7\n8\n9\n10');
       done();
     };
-    performTail(userArguments, null, stdin, onCompletion);
+    performTail(userArguments, { stdin }, onCompletion);
     assert.ok(stdin.setEncoding.calledWith('utf8'));
-    assert.strictEqual(stdin.on.firstCall.args[0], 'data');
-    assert.strictEqual(stdin.on.secondCall.args[0], 'end');
-    assert.strictEqual(stdin.on.callCount, 2);
+    assert.strictEqual(stdin.on.firstCall.args[zero], 'data');
+    assert.strictEqual(stdin.on.secondCall.args[zero], 'end');
+    assert.strictEqual(stdin.on.callCount, two);
     sinon.restore();
   });
-  it('should give specified num of lines from last the standard input', done => {
+  it('give specified num of lines from last the standard input', done => {
     const stdin = {
       on: sinon.fake.yieldsAsync(
         '1\n2\n3\n4\n5\n6\n7\n8\n9\n1\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n'
@@ -108,11 +111,11 @@ describe('performTail', function() {
       assert.strictEqual(content, '6\n7\n8\n9\n10');
       done();
     };
-    performTail(userArguments, null, stdin, onCompletion);
+    performTail(userArguments, { stdin }, onCompletion);
     assert.ok(stdin.setEncoding.calledWith('utf8'));
-    assert.strictEqual(stdin.on.firstCall.args[0], 'data');
-    assert.strictEqual(stdin.on.secondCall.args[0], 'end');
-    assert.strictEqual(stdin.on.callCount, 2);
+    assert.strictEqual(stdin.on.firstCall.args[zero], 'data');
+    assert.strictEqual(stdin.on.secondCall.args[zero], 'end');
+    assert.strictEqual(stdin.on.callCount, two);
     sinon.restore();
   });
 });

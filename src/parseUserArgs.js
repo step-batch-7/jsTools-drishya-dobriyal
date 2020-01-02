@@ -33,7 +33,8 @@ const getUserCount = function(optionFirst, optionSecond) {
 const parseUserArgs = function(userArgs) {
   const currentOption = getDefaultOption(userArgs);
   const [optionFirst, optionSecond] = [...userArgs];
-  if (userArgs.length === 0 || !optionFirst.includes('-n')) {
+  const minLengthOfUserArgs = 0;
+  if (userArgs.length === minLengthOfUserArgs || !optionFirst.includes('-n')) {
     return currentOption;
   }
 
