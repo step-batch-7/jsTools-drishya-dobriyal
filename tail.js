@@ -1,7 +1,7 @@
-const { readFile } = require('fs');
+const { createReadStream } = require('fs');
 const { stdin } = require('process');
 
-const { performTail } = require('./src/tailLib.js');
+const { performTail } = require('./src/performTail.js');
 
 const displayTailOutput = function(error, content) {
   process.stderr.write(error);
@@ -10,7 +10,7 @@ const displayTailOutput = function(error, content) {
 
 const main = function() {
   const [, , ...userArguments] = [...process.argv];
-  performTail(userArguments, { readFile, stdin }, displayTailOutput);
+  performTail(userArguments, { createReadStream, stdin }, displayTailOutput);
 };
 
 main();
