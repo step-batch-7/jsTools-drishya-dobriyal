@@ -3,31 +3,31 @@ const sinon = require('sinon');
 
 const { performTail } = require('../src/performTail.js');
 
-describe('performTail', function() {
+describe('performTail', function () {
   const zero = 0;
   let on, setEncoding;
-  beforeEach(function() {
+  beforeEach(function () {
     on = sinon.fake();
     setEncoding = sinon.fake();
   });
-  afterEach(function() {
+  afterEach(function () {
     sinon.restore();
   });
   it('give last 10 lines of a file that exist ', done => {
     const userArguments = ['filePath'];
-
-    const createReadStream = function(filePath) {
-      assert.strictEqual(filePath, 'filePath');
-      return { on, setEncoding };
-    };
-
     const onCompletion = (error, content) => {
       assert.strictEqual(error, '');
       assert.strictEqual(content, '1\n2\n3\n4\n5\n6\n7\n8\n9\n10');
       done();
     };
+    const streamPicker = {
+      pick(filePath) {
+        assert.strictEqual(filePath, 'filePath');
+        return { on, setEncoding };
+      }
+    };
 
-    performTail(userArguments, { createReadStream }, onCompletion);
+    performTail(userArguments, streamPicker, onCompletion);
 
     assert.ok(setEncoding.calledWith('utf8'));
     assert.strictEqual(on.firstCall.args[zero], 'data');
@@ -40,10 +40,13 @@ describe('performTail', function() {
   });
   it('give no such directory error if file does not exist ', done => {
     const userArguments = ['nonExistingFilePath'];
-    const createReadStream = function(filePath) {
-      assert.strictEqual(filePath, 'nonExistingFilePath');
-      return { on, setEncoding };
+    const streamPicker = {
+      pick(filePath) {
+        assert.strictEqual(filePath, 'nonExistingFilePath');
+        return { on, setEncoding };
+      }
     };
+
     const onCompletion = (error, content) => {
       assert.strictEqual(
         error,
@@ -52,7 +55,7 @@ describe('performTail', function() {
       assert.strictEqual(content, '');
       done();
     };
-    performTail(userArguments, { createReadStream }, onCompletion);
+    performTail(userArguments, streamPicker, onCompletion);
     assert.ok(setEncoding.calledWith('utf8'));
     assert.strictEqual(on.firstCall.args[zero], 'data');
     assert.strictEqual(on.secondCall.args[zero], 'end');
@@ -61,7 +64,7 @@ describe('performTail', function() {
   });
   it('give illegal count error if -n does not have num after it', done => {
     const userArguments = ['-n', '-$', 'filePath'];
-    const onCompletion = function(error, content) {
+    const onCompletion = function (error, content) {
       assert.strictEqual(error, 'tail: illegal offset -- -$');
       assert.strictEqual(content, '');
       done();
@@ -71,9 +74,11 @@ describe('performTail', function() {
   it('give the asked num of lines from end of a file that exist', done => {
     const userArguments = ['-n', '-4', 'filePath'];
 
-    const createReadStream = function(filePath) {
-      assert.strictEqual(filePath, 'filePath');
-      return { on, setEncoding };
+    const streamPicker = {
+      pick(filePath) {
+        assert.strictEqual(filePath, 'filePath');
+        return { on, setEncoding };
+      }
     };
 
     const onCompletion = (error, content) => {
@@ -81,7 +86,7 @@ describe('performTail', function() {
       assert.strictEqual(content, '7\n8\n9\n10');
       done();
     };
-    performTail(userArguments, { createReadStream }, onCompletion);
+    performTail(userArguments, streamPicker, onCompletion);
     assert.ok(setEncoding.calledWith('utf8'));
     assert.strictEqual(on.firstCall.args[zero], 'data');
     on.firstCall.args[1](
@@ -94,11 +99,12 @@ describe('performTail', function() {
   it('give error if file does not exist ( num of lines provided)', done => {
     const userArguments = ['-n', '-5', 'nonExistingFilePath'];
 
-    const createReadStream = function(filePath) {
-      assert.strictEqual(filePath, 'nonExistingFilePath');
-      return { on, setEncoding };
+    const streamPicker = {
+      pick(filePath) {
+        assert.strictEqual(filePath, 'nonExistingFilePath');
+        return { on, setEncoding };
+      }
     };
-
     const onCompletion = (error, content) => {
       assert.strictEqual(
         error,
@@ -107,7 +113,7 @@ describe('performTail', function() {
       assert.strictEqual(content, '');
       done();
     };
-    performTail(userArguments, { createReadStream }, onCompletion);
+    performTail(userArguments, streamPicker, onCompletion);
     assert.ok(setEncoding.calledWith('utf8'));
     assert.strictEqual(on.firstCall.args[zero], 'data');
     assert.strictEqual(on.secondCall.args[zero], 'end');
@@ -115,16 +121,20 @@ describe('performTail', function() {
     on.thirdCall.args[1]();
   });
   it('give default(last 10 lines) from the standard input', done => {
-    const stdin = { setEncoding, on };
     const userArguments = [];
-
+    const streamPicker = {
+      pick(filePath) {
+        assert.strictEqual(filePath, undefined);
+        return { on, setEncoding };
+      }
+    };
     const onCompletion = (error, content) => {
       assert.strictEqual(error, '');
       assert.strictEqual(content, '1\n2\n3\n4\n5\n6\n7\n8\n9\n10');
       done();
     };
 
-    performTail(userArguments, { stdin }, onCompletion);
+    performTail(userArguments, streamPicker, onCompletion);
 
     assert.ok(setEncoding.calledWith('utf8'));
     assert.strictEqual(on.firstCall.args[zero], 'data');
@@ -136,16 +146,19 @@ describe('performTail', function() {
     assert.strictEqual(on.callCount, 2);
   });
   it('give specified num of lines from last the standard input', done => {
-    const stdin = { setEncoding, on };
     const userArguments = ['-n', '-5'];
-
+    const streamPicker = {
+      pick(filePath) {
+        assert.strictEqual(filePath, undefined);
+        return { on, setEncoding };
+      }
+    };
     const onCompletion = (error, content) => {
       assert.strictEqual(error, '');
       assert.strictEqual(content, '6\n7\n8\n9\n10');
       done();
     };
-
-    performTail(userArguments, { stdin }, onCompletion);
+    performTail(userArguments, streamPicker, onCompletion);
 
     assert.ok(setEncoding.calledWith('utf8'));
     assert.strictEqual(on.firstCall.args[zero], 'data');

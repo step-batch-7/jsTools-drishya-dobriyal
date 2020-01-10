@@ -2,17 +2,18 @@ const { parseUserArgs } = require('./parseUserArgs.js');
 const { getLastNLines } = require('./getLastNLines.js');
 const emptyString = '';
 
-const performTail = function(
+const performTail = function (
   userArgs,
-  { createReadStream, stdin },
+  streamPicker,
   onCompletion
 ) {
+
   const { filePath, numOfLines, errorOccurred } = parseUserArgs([...userArgs]);
   if (errorOccurred) {
     return onCompletion(errorOccurred, emptyString);
   }
 
-  const readerStream = function(reader, numOfLines, onCompletion) {
+  const readerStream = function (reader) {
     let content = '';
     reader.setEncoding('utf8');
     reader.on('data', data => {
@@ -26,11 +27,8 @@ const performTail = function(
     });
   };
 
-  const reader = filePath
-    ? () => readerStream(createReadStream(filePath), numOfLines, onCompletion)
-    : () => readerStream(stdin, numOfLines, onCompletion);
-
-  reader();
+  const stream = streamPicker.pick(filePath);
+  readerStream(stream);
 };
 
 module.exports = {
